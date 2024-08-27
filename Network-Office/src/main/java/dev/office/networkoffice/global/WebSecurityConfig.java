@@ -8,12 +8,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,9 +21,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-
-
-	// Security filterchain을 정의하는 Bean입니다.
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
@@ -40,11 +35,9 @@ public class WebSecurityConfig {
 				.anyRequest().authenticated()
 			)
 			.cors(cors -> cors.configurationSource(configurationSource()))
-			// .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
 
-	// CORS 설정 정의 Bean
 	@Bean
 	public CorsConfigurationSource configurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
@@ -56,7 +49,6 @@ public class WebSecurityConfig {
 		configuration.setAllowCredentials(true);
 		configuration.setMaxAge(3600L);
 
-		// URL 기반으로 CORS 설정 등록
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 
