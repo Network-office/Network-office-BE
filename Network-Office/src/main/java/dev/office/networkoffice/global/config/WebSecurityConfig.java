@@ -1,4 +1,4 @@
-package dev.office.networkoffice.global;
+package dev.office.networkoffice.global.config;
 
 import java.util.List;
 
