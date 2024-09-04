@@ -1,7 +1,6 @@
 package dev.office.networkoffice.global.exception.handler;
 
 import dev.office.networkoffice.global.exception.ExternalServiceException;
-import dev.office.networkoffice.global.exception.UnauthorizedException;
 import dev.office.networkoffice.global.exception.dto.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +16,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(bodyData);
-    }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ExceptionResponse> handleForbiddenException(UnauthorizedException exception) {
-        ExceptionResponse bodyData = ExceptionResponse.of(exception.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
                 .body(bodyData);
     }
 
