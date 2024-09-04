@@ -29,7 +29,8 @@ public class WebSecurityConfig {
 			.logout(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(authorizeRequests -> authorizeRequests
 				.requestMatchers("/api/v1/**").permitAll()
-				.requestMatchers("/test").authenticated()
+				.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+				.requestMatchers("/h2-console/**").permitAll()
 				.anyRequest().authenticated()
 			)
 			.cors(cors -> cors.configurationSource(configurationSource()))
