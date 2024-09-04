@@ -22,5 +22,12 @@ spring:
       hibernate:
         format_sql: true
 
+oauth:
+  kakao:
+    redirect-uri: ${OAUTH_KAKAO_REDIRECT_URI}
+    access-token-request-url: ${OAUTH_KAKAO_ACCESS_TOKEN_REQUEST_URI}
+    user-information-request-url: ${OAUTH_KAKAO_USER_INFORMATION_REQUEST_URI}
+    rest-api-key: ${OAUTH_KAKAO_REST_API_KEY}
+
 logging.level:
   org.hibernate.SQL: debug
