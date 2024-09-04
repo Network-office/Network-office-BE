@@ -1,10 +1,8 @@
 package dev.office.networkoffice.user.service;
 
-import dev.office.networkoffice.global.exception.UnauthorizedException;
 import dev.office.networkoffice.user.dto.UserInfo;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,23 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final HttpSession httpSession;
 
     @Transactional(readOnly = true)
-    public UserInfo me() {
-        Long userId = getUserId();
+    public UserInfo me(Long userId) {
         User findUser = findUserById(userId);
-
         return responseUserInfo(findUser);
-    }
-
-    private Long getUserId() {
-        Long userId = (Long) httpSession.getAttribute("userId");
-        if (userId == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
-        return userId;
     }
 
     private User findUserById(Long userId) {

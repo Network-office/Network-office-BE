@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/users")
@@ -16,7 +18,8 @@ public class UserController implements UserApiDocs {
     private final UserService userService;
 
     @GetMapping("me")
-    public UserInfo me() {
-        return userService.me();
+    public UserInfo me(Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        return userService.me(userId);
     }
 }
