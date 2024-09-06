@@ -9,8 +9,8 @@ public record KakaoUserResponse(
         @JsonProperty("kakao_account")
         KakaoAccount kakaoAccount
 ) {
-        public OAuthInfo toOAuthInfo() {
-                String nickname = kakaoAccount.profile().nickname();
-                return OAuthInfo.createForKakao(id, nickname);
-        }
+    public OAuthInfo toOAuthInfo() {
+        String nickname = kakaoAccount.profile().nickname();
+        return OAuthInfo.createForKakao(id, nickname);
+    }
 }
