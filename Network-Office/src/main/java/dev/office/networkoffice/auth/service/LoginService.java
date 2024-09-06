@@ -39,7 +39,7 @@ public class LoginService {
         OAuthInfo oAuthKakaoInfo = kakaoUserResponse.toOAuthInfo();
         String profileImage = selectProfileImage(kakaoUserResponse);
 
-        userRepository.save(User.create(oAuthKakaoInfo, profileImage));
+        userRepository.save(User.createNewUserWithOAuth(oAuthKakaoInfo, profileImage));
     }
 
     private String selectProfileImage(KakaoUserResponse kakaoUserResponse) {

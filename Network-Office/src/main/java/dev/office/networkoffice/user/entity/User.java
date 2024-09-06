@@ -41,7 +41,7 @@ public class User extends BaseTimeEntity {
         this.isVerified = false;
     }
 
-    public static User create(OAuthInfo oAuthInfo, String profileImageUrl) {
+    public static User createNewUserWithOAuth(OAuthInfo oAuthInfo, String profileImageUrl) {
         return new User(oAuthInfo, profileImageUrl);
     }
 

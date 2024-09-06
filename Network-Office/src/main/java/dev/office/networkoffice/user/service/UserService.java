@@ -14,7 +14,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public UserInfo me(Long userId) {
+    public UserInfo profile(Long userId) {
         User findUser = findUserById(userId);
         return responseUserInfo(findUser);
     }

@@ -17,9 +17,9 @@ public class UserController implements UserApiDocs {
 
     private final UserService userService;
 
-    @GetMapping("me")
-    public UserInfo me(Principal principal) {
+    @GetMapping("profile")
+    public UserInfo profile(Principal principal) {
         Long userId = Long.parseLong(principal.getName());
-        return userService.me(userId);
+        return userService.profile(userId);
     }
 }

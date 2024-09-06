@@ -22,5 +22,5 @@ public interface UserApiDocs {
                     description = "인증되지 않은 사용자가 요청했을 때"
             )
     })
-    UserInfo me(Principal principal);
+    UserInfo profile(Principal principal);
 }
