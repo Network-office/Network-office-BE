@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -42,22 +43,23 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (isAuthenticated()) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        if (isAuthenticated(context)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        authenticateFromSession();
+        authenticateFromSession(context);
 
         filterChain.doFilter(request, response);
     }
 
-    private boolean isAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    private boolean isAuthenticated(SecurityContext context) {
+        Authentication authentication = context.getAuthentication();
         return authentication != null;
     }
 
-    private void authenticateFromSession() {
+    private void authenticateFromSession(SecurityContext context) {
         Long userId = (Long) httpSession.getAttribute("userId");
         if (userId == null) {
             return;
@@ -69,7 +71,7 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
         }
 
         Authentication authentication = createAuthentication(optionalUser.get());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        context.setAuthentication(authentication);
     }
 
     private Authentication createAuthentication(User user) {
