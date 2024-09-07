@@ -3,6 +3,7 @@ package dev.office.networkoffice.global.config.security;
 import dev.office.networkoffice.global.exception.dto.ExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.io.IOException;
  * 클라이언트에게 401 Unauthorized 응답을 반환합니다.
  * @See org.springframework.http.HttpStatus.UNAUTHORIZED
  */
+@Slf4j
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -27,5 +29,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         ExceptionResponse exceptionResponse = ExceptionResponse.of("로그인이 필요합니다.");
         response.getWriter().write(exceptionResponse.toString());
+
+        log.error("Unauthorized Error: {}", authException.getMessage());
     }
 }

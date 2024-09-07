@@ -3,6 +3,7 @@ package dev.office.networkoffice.global.config.security;
 import dev.office.networkoffice.global.exception.dto.ExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.io.IOException;
  * 클라이언트에게 403 Forbidden 응답을 반환합니다.
  * @See org.springframework.http.HttpStatus.FORBIDDEN
  */
+@Slf4j
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
@@ -27,5 +29,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         ExceptionResponse exceptionResponse = ExceptionResponse.of("접근 권한이 없습니다.");
         response.getWriter().write(exceptionResponse.toString());
+
+        log.error("Forbidden Error: {}", accessDeniedException.getMessage());
     }
 }
