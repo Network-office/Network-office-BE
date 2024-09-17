@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * CSRF 보호가 필요한 요청인지 판별하는 클래스입니다.
@@ -15,7 +16,8 @@ import java.util.Optional;
 @Component
 public class CsrfRequireMatcher implements RequestMatcher {
 
-    private static final String LOGIN_URI = "/api/v1/login";
+    private static final Pattern ALLOWED_METHODS = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+    private static final String LOGIN_URI = "/api/v1/login/**";
     private static final String CSRF_TOKEN_URI = "/api/v1/csrf";
     private static final String H2_CONSOLE_URI = "/h2-console/**";
     private static final String SWAGGER_UI_URI = "/swagger-ui/**";
@@ -29,7 +31,11 @@ public class CsrfRequireMatcher implements RequestMatcher {
     }
 
     private boolean requiresCsrfProtection(HttpServletRequest request) {
-        return !isExemptedRequest(request);
+        return !isExemptedRequest(request) && !isAllowedMethod(request);
+    }
+
+    private boolean isAllowedMethod(HttpServletRequest request) {
+        return ALLOWED_METHODS.matcher(request.getMethod()).matches();
     }
 
     private boolean isExemptedRequest(HttpServletRequest request) {
