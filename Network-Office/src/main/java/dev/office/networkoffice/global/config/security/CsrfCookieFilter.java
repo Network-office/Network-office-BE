@@ -29,7 +29,7 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CSRF_TOKEN_ATTRIBUTE);
         if (isClientCsrfTokenAbsent(request)) {
-            csrfToken.getToken(); // 지연된 쿠키를 로드하여 쿠키에 CSRF 토큰을 저장합니다.
+            csrfToken.getToken(); // 지연된 토큰을 로드하여 쿠키에 CSRF 토큰을 저장합니다.
         }
 
         filterChain.doFilter(request, response);
