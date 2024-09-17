@@ -58,9 +58,26 @@ public class SecurityConfig {
     }
 
     private void csrfConfig(CsrfConfigurer<HttpSecurity> csrf) {
-        csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        CookieCsrfTokenRepository csrfTokenRepository = getCookieCsrfTokenRepository();
+        csrf.csrfTokenRepository(csrfTokenRepository)
                 .requireCsrfProtectionMatcher(csrfRequireMatcher)
                 .csrfTokenRequestHandler(spaCsrfTokenRequestHandler);
+    }
+
+    /**
+     * HttpOnly 속성을 추가하지 않은 이유는 Synchronizer Token Pattern을 사용하기 때문입니다.
+     * SameSite 속성을 Lax로 설정하여 CSRF 공격을 방지합니다. (더 높은 보안 수준을 원하는 경우 Strict로 설정)
+     * Path 속성을 /로 설정하여 모든 범위에서 사용할 수 있도록 합니다.
+     * 개발 환경에서 HTTPS 설정하지 않기 때문에 Secure 속성을 추가하지 않았습니다. (향후 HTTPS 설정 시 추가)
+     */
+    private CookieCsrfTokenRepository getCookieCsrfTokenRepository() {
+        CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrfTokenRepository.setCookieCustomizer(cookie -> {
+            cookie.sameSite("Lax");
+            cookie.path("/");
+            cookie.secure(false);
+        });
+        return csrfTokenRepository;
     }
 
     private void headersConfig(HeadersConfigurer<HttpSecurity> headers) {
