@@ -1,6 +1,7 @@
 spring:
-  profiles:
-    active: test
+  config:
+    activate:
+      on-profile: test
   application:
     name: Network-Office
 
@@ -28,6 +29,10 @@ oauth:
     access-token-request-url: ${OAUTH_KAKAO_ACCESS_TOKEN_REQUEST_URI}
     user-information-request-url: ${OAUTH_KAKAO_USER_INFORMATION_REQUEST_URI}
     rest-api-key: ${OAUTH_KAKAO_REST_API_KEY}
+
+server:
+  dev:
+    domain: ${DEV_SERVER_DOMAIN}
 
 logging.level:
   org.hibernate.SQL: debug
