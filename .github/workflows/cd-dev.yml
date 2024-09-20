@@ -44,7 +44,7 @@ jobs:
         run: cd ~/app
 
       - name: Docker Image pull
-        run: sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:latest
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:latest
 
       - name: Docker Compose Restart
         run: sudo docker-compose down && sudo docker-compose up -d
