@@ -33,9 +33,10 @@ public class DeletedGatheringManager {
 	private Long originGatheringId;
 
 	@Builder
-	private DeletedGatheringManager(DeletedGathering deletedGathering, User user) {
+	private DeletedGatheringManager(DeletedGathering deletedGathering, User user, Long originGatheringId) {
 		this.deletedGathering = deletedGathering;
 		this.user = user;
+		this.originGatheringId = originGatheringId;
 	}
 
 }
