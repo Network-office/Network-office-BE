@@ -2,6 +2,7 @@ package dev.office.networkoffice.global.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -36,7 +37,12 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
     }
 
     private boolean isClientCsrfTokenAbsent(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return true;
+        }
+
+        return Arrays.stream(cookies)
                 .filter(cookie -> CSRF_COOKIE_NAME.equals(cookie.getName()))
                 .findFirst()
                 .isEmpty();
