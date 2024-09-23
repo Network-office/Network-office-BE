@@ -1,6 +1,6 @@
 package dev.office.networkoffice.gathering.entity;
 
-import java.sql.Time;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,23 +18,21 @@ public class TimeInfo {
 	@Column(name = "date")
 	private String date;
 
-	@DateTimeFormat()
 	@Column(name = "start_time")
-	private String startTime;
-	@DateTimeFormat()
+	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+	private LocalDateTime startTime;
+
 	@Column(name = "end_time")
-	private String endTime;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+	private LocalDateTime endTime;
 
-
-
-	private TimeInfo(String date, String startTime , String endTime) {
+	private TimeInfo(String date, LocalDateTime startTime , LocalDateTime endTime) {
 		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}
 
-	public static TimeInfo setTimeInfo(String date, String startTime , String endTime) {
+	public static TimeInfo setTimeInfo(String date, LocalDateTime startTime , LocalDateTime endTime) {
 		return new TimeInfo(date, startTime, endTime);
 	}
 }
-

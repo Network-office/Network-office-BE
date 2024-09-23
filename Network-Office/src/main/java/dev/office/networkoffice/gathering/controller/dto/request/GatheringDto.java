@@ -1,5 +1,7 @@
 package dev.office.networkoffice.gathering.controller.dto.request;
 
+import java.time.LocalDateTime;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.parameters.P;
 
@@ -24,8 +26,8 @@ public record GatheringDto(
 	Double y,
 	String date,
 
-	String startTime,
-	String endTime
+	LocalDateTime startTime,
+	LocalDateTime endTime
 ) {
 	public PlaceInfo placeInfoConstructor(){
 		return PlaceInfo.setPlaceInfo(place,detailPlace,si,dong,gu,x,y);
