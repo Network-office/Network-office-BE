@@ -15,10 +15,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeletedGatheringManagerService {
+
 	private final DeletedGatheringManagerRepository deletedGatheringManagerRepository;
+
 	public Optional<DeletedGatheringManager> findDeletedGatheringByPastId(Long gatheringId){
 		return deletedGatheringManagerRepository.findByOriginGatheringId(gatheringId);
 	}
+
 	@Transactional
 	public DeletedGatheringManager savingDeletedGathering(User host, DeletedGathering gathering){
 		return deletedGatheringManagerRepository.save(
