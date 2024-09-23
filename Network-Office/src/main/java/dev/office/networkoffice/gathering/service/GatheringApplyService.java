@@ -24,15 +24,14 @@ public class GatheringApplyService {
 
 	/**
 	 * 모임 신청.
-	 * @param applicantId : 신청자 아이디
+	 * @param userId : 신청자 아이디
 	 * @param gatheringId : 신청하려는 모임 아이디
 	 */
 	@Transactional
-	public void applyGathering(Long applicantId, Long gatheringId){
-		User user = userRepository.findById(applicantId)
-			.orElseThrow(()-> new RuntimeException("유저없음"));//신청자 검증
-		Gathering gathering = gatheringRepository.findById(gatheringId)
-			.orElseThrow(()-> new RuntimeException("모임없음")); //모임검증
+	public void applyGathering(Long userId, Long gatheringId){
+
+		User user = getUserById(userId);
+		Gathering gathering = getGatheringById(gatheringId);
 		//기존 모임에 이미 user가 있는지 체크
 
 		//신청 엔티티 생성
@@ -50,13 +49,8 @@ public class GatheringApplyService {
 	 */
 
 	@Transactional(readOnly = true)
-	public List<Applicants> readApplicantsByGathering(Long hostId, Long gatheringId){
-		Gathering gathering = gatheringRepository.findById(gatheringId)
-			.orElseThrow(()-> new RuntimeException("모임없음"));
-		if ((gathering.getHostId().equals(hostId))){ //해당 유저가 호스트인지 검사한다.
-			throw new RuntimeException("호스트가 아니라 조회 할 수 없다.");
-		}
-		return applicantRepository.findAllByGathering(gathering);
+	public List<Applicants> readApplicantsByGathering(Long hostId, Long gatheringId) {
+		return applicantRepository.findByGatheringIdAndUserId(gatheringId, hostId);
 	}
 
 	/**
@@ -81,12 +75,22 @@ public class GatheringApplyService {
 	}
 
 	private Applicants findApplicantsByHost(Long hostId, Long applicantId){
-		Applicants applicants = applicantRepository.findById(applicantId)
-			.orElseThrow(() -> new RuntimeException("신청id로 찾음"));
+		return applicantRepository.findByIdAndUserId(applicantId, hostId)
+			.orElseThrow(()-> new IllegalArgumentException("신청 없음"));
+	}
 
-		if (!(applicants.getGathering().getHostId().equals(hostId))){
-			throw new RuntimeException("호스트나 모임 일치하지않음.");
-		}
-		return applicants;
+	private User getUserById(Long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(()-> new IllegalArgumentException("유저 없음"));
+	}
+
+	private Gathering getGatheringById(Long gatheringId) {
+		return gatheringRepository.findById(gatheringId)
+			.orElseThrow(()-> new IllegalArgumentException("모임 없음"));
+	}
+
+	private Applicants getApplicantsById(Long applicantId){
+		return applicantRepository.findById(applicantId)
+			.orElseThrow(()-> new IllegalArgumentException("신청 없음"));
 	}
 }
