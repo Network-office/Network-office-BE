@@ -16,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,20 +50,17 @@ public class Gathering {
 	@Embedded
 	private TimeInfo timeInfo;
 
-	private Long hostId; //모임대표는 프로필을 볼수 있어야한다. 필요한 타입으로 임베디드로 바꿔야할지도
-
 	@OneToMany(mappedBy = "gathering", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<GatheringUserConfirmManager> confirmedUserList = new ArrayList<>();
 
 	@Builder
-	private Gathering(String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo, User host,
+	private Gathering(String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo,
 		List<GatheringUserConfirmManager> confirmedUserList) {
 		this.title = title;
 		this.description = description;
 		this.category = category;
 		this.placeInfo = placeInfo;
 		this.timeInfo = timeInfo;
-		this.hostId = host.getId();
 		this.confirmedUserList = confirmedUserList;
 	}
 

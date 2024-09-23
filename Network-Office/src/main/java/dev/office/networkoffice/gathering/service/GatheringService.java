@@ -28,13 +28,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GatheringService {
+
 	private final GatheringRepository gatheringRepository;
 	private final UserRepository userRepository;
 	private final GatheringAuthorityManagerService gatheringAuthorityManagerService;
 	private final DeletedGatheringManagerService deletedGatheringManagerService;
 	private final GatheringManagerRepository gatheringManagerRepository;
 	private final DeletedGatheringRepository deletedGatheringRepository;
-	private final DeletedGatheringManagerRepository deletedGatheringManagerRepository;
 
 	// 모임 생성
 	@Transactional
@@ -46,7 +46,6 @@ public class GatheringService {
 				.category(Category.valueOf(dto.category()))
 				.title(dto.title())
 				.description(dto.description())
-				.host(host)
 				.placeInfo(dto.placeInfoConstructor())
 				.timeInfo(dto.timeInfoConstructor())
 			.build()
@@ -70,8 +69,9 @@ public class GatheringService {
 	//모임 수정
 	@Transactional
 	public GatheringResponseDto modifyGatheringInfoByHost(Long hostId, GatheringModifyDto modifyDto){
-		User host = userRepository.findById(hostId).orElseThrow(()-> new IllegalArgumentException("호스트 없음"));
-		Gathering gathering = gatheringRepository.findById(modifyDto.id()).orElseThrow(()-> new IllegalArgumentException("모임 없음"));
+		GatheringUserConfirmManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId,
+			modifyDto.id());
+		Gathering gathering = confirmManager.getGathering();
 		gathering.modifyGatheringInfo(modifyDto);
 		return GatheringResponseDto.from(gathering);
 	}
