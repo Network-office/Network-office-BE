@@ -1,6 +1,7 @@
 package dev.office.networkoffice.gathering.entity;
 
 import dev.office.networkoffice.gathering.domain.DeletedType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,10 +23,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "deleted_gatherings")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeletedGathering {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "deleted_gathering_id")
 	private Long id;
+
 	private String reason;
+
 	private DeletedType deletedType;
 
 	@Builder

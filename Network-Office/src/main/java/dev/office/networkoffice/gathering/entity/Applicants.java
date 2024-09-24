@@ -1,10 +1,13 @@
 package dev.office.networkoffice.gathering.entity;
 
 import dev.office.networkoffice.user.entity.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -23,14 +26,18 @@ import lombok.NoArgsConstructor;
 @Table(name = "applicants")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Applicants {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "applicant_id")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "gathering_id")
 	private Gathering gathering;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User user;
 
 	@Builder
