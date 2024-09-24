@@ -1,7 +1,10 @@
 package dev.office.networkoffice.gathering.controller.dto.response;
 
+import java.time.LocalDateTime;
+
 import dev.office.networkoffice.gathering.entity.Gathering;
 import lombok.Builder;
+
 @Builder
 public record GatheringResponseDto(
 	String title,
@@ -16,8 +19,8 @@ public record GatheringResponseDto(
 	Double y,
 	String date,
 
-	String startTime,
-	String endTime
+	LocalDateTime startTime,
+	LocalDateTime endTime
 ) {
 	public static GatheringResponseDto from(Gathering gathering){
 		return GatheringResponseDto.builder()

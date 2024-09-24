@@ -37,7 +37,7 @@ public class GatheringAuthorityManagerService {
 			.build());
 	}
 
-	public GatheringUserConfirmManager findAuthorityManager_withHostIdAndGatheringId(Long gatheringId, Long hostId){
+	public GatheringUserConfirmManager findAuthorityManager_withHostIdAndGatheringId(Long hostId, Long gatheringId){
 		//TODO: not found exception
 		return gatheringManagerRepository.findByGatheringAndUser(gatheringId,hostId,GatheringAuthority.HOST).orElseThrow();
 	}

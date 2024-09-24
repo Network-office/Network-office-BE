@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import dev.office.networkoffice.gathering.entity.DeletedGathering;
 import dev.office.networkoffice.gathering.entity.DeletedGatheringManager;
 
 public interface DeletedGatheringManagerRepository extends JpaRepository<DeletedGatheringManager, Long> {

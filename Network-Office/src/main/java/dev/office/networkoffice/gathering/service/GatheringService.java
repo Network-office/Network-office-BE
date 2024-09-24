@@ -93,10 +93,12 @@ public class GatheringService {
 				.reason(reason)
 				.deletedType(deletedType)
 				.build());
+
 		deletedGatheringManagerService.savingDeletedGathering(
 			confirmManager.getUser(),
 			deletedGathering
 		);
+
 		gatheringManagerRepository.delete(confirmManager);//삭제
 	}
 

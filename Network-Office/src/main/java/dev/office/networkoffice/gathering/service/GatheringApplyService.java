@@ -32,7 +32,7 @@ public class GatheringApplyService {
 
 		User user = getUserById(userId);
 		Gathering gathering = getGatheringById(gatheringId);
-		//기존 모임에 이미 user가 있는지 체크
+		//TODO: 기존 모임에 이미 user가 있는지 체크
 
 		//신청 엔티티 생성
 		Applicants applicants = Applicants.builder()
@@ -50,7 +50,8 @@ public class GatheringApplyService {
 
 	@Transactional(readOnly = true)
 	public List<Applicants> readApplicantsByGathering(Long hostId, Long gatheringId) {
-		return applicantRepository.findByGatheringIdAndUserId(gatheringId, hostId);
+		managerService.findAuthorityManager_withHostIdAndGatheringId(hostId,gatheringId);
+		return applicantRepository.findAllByGatheringId(gatheringId);
 	}
 
 	/**
