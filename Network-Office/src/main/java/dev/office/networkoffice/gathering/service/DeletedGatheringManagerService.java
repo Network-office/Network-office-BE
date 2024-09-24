@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dev.office.networkoffice.gathering.entity.DeletedGathering;
 import dev.office.networkoffice.gathering.entity.DeletedGatheringManager;
-import dev.office.networkoffice.gathering.entity.Gathering;
 import dev.office.networkoffice.gathering.repository.DeletedGatheringManagerRepository;
 import dev.office.networkoffice.user.entity.User;
 import lombok.RequiredArgsConstructor;

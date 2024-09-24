@@ -12,12 +12,10 @@ import dev.office.networkoffice.gathering.controller.dto.response.GatheringListR
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import dev.office.networkoffice.gathering.domain.Category;
 import dev.office.networkoffice.gathering.domain.DeletedType;
-import dev.office.networkoffice.gathering.domain.GatheringAuthority;
 import dev.office.networkoffice.gathering.entity.DeletedGathering;
 import dev.office.networkoffice.gathering.entity.DeletedGatheringManager;
 import dev.office.networkoffice.gathering.entity.Gathering;
 import dev.office.networkoffice.gathering.entity.GatheringUserConfirmManager;
-import dev.office.networkoffice.gathering.repository.DeletedGatheringManagerRepository;
 import dev.office.networkoffice.gathering.repository.DeletedGatheringRepository;
 import dev.office.networkoffice.gathering.repository.GatheringManagerRepository;
 import dev.office.networkoffice.gathering.repository.GatheringRepository;
@@ -83,18 +81,19 @@ public class GatheringService {
 	 */
 	@Transactional
 	public void deleteGatheringByHost(Long hostId, Long gatheringId, String reason, DeletedType deletedType){
-
 		GatheringUserConfirmManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId, gatheringId);
 		Optional<DeletedGatheringManager> deletedGatheringManager = deletedGatheringManagerService.findDeletedGatheringByPastId(gatheringId);
+
 		if (deletedGatheringManager.isPresent()){
 			//TODO: 이미 삭제된 모임입니다. 에러
 		}
+
 		DeletedGathering deletedGathering = deletedGatheringRepository.save(
 			DeletedGathering.builder()
-			.reason(reason)
-			.deletedType(deletedType)
-			.build());
-		DeletedGatheringManager gatherings =  deletedGatheringManagerService.savingDeletedGathering(
+				.reason(reason)
+				.deletedType(deletedType)
+				.build());
+		deletedGatheringManagerService.savingDeletedGathering(
 			confirmManager.getUser(),
 			deletedGathering
 		);
