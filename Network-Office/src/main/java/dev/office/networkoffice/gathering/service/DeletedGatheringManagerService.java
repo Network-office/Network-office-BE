@@ -15,19 +15,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeletedGatheringManagerService {
 
-	private final DeletedGatheringManagerRepository deletedGatheringManagerRepository;
+    private final DeletedGatheringManagerRepository deletedGatheringManagerRepository;
 
-	public Optional<DeletedGatheringManager> findDeletedGatheringByPastId(Long gatheringId){
-		return deletedGatheringManagerRepository.findByOriginGatheringId(gatheringId);
-	}
+    public Optional<DeletedGatheringManager> findDeletedGatheringByPastId(Long gatheringId) {
+        return deletedGatheringManagerRepository.findByOriginGatheringId(gatheringId);
+    }
 
-	@Transactional
-	public DeletedGatheringManager savingDeletedGathering(User host, DeletedGathering gathering){
-		return deletedGatheringManagerRepository.save(
-			DeletedGatheringManager.builder()
-			.user(host)
-			.deletedGathering(gathering)
-			.build()
-		);
-	}
+    @Transactional
+    public DeletedGatheringManager savingDeletedGathering(User host, DeletedGathering gathering) {
+        return deletedGatheringManagerRepository.save(
+                DeletedGatheringManager.builder()
+                        .user(host)
+                        .deletedGathering(gathering)
+                        .build()
+        );
+    }
 }

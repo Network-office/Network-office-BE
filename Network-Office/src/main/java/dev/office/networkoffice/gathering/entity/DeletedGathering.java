@@ -24,21 +24,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeletedGathering {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "deleted_gathering_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "deleted_gathering_id")
+    private Long id;
 
-	private String reason;
+    private String reason;
 
-	private DeletedType deletedType;
+    private DeletedType deletedType;
 
-	@Builder
-	private DeletedGathering(String reason, DeletedType deletedType){
-		this.reason = reason;
-		this.deletedType = deletedType;
-	}
-	public void updateReasonsForDeleted(String reason){
-		this.reason = reason;
-	}
+    @Builder
+    private DeletedGathering(String reason, DeletedType deletedType) {
+        this.reason = reason;
+        this.deletedType = deletedType;
+    }
+
+    public void updateReasonsForDeleted(String reason) {
+        this.reason = reason;
+    }
 }

@@ -9,7 +9,7 @@ import dev.office.networkoffice.gathering.entity.Applicants;
 
 public interface ApplicantRepository extends JpaRepository<Applicants, Long> {
 
-	List<Applicants> findAllByGatheringId(Long gatheringId);
+    List<Applicants> findAllByGatheringId(Long gatheringId);
 
-	Optional<Applicants> findByIdAndUserId(Long applicantId, Long userId);
+    Optional<Applicants> findByIdAndUserId(Long applicantId, Long userId);
 }

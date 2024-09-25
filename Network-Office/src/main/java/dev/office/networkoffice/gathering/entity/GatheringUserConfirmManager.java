@@ -25,25 +25,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GatheringUserConfirmManager {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "gathering_manager_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "gathering_manager_id")
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "gathering_id")
-	private Gathering gathering;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gathering_id")
+    private Gathering gathering;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	private GatheringAuthority gatheringAuthority;
+    private GatheringAuthority gatheringAuthority;
 
-	@Builder
-	private GatheringUserConfirmManager(Gathering gathering, User user, GatheringAuthority gatheringAuthority) {
-		this.gathering = gathering;
-		this.user = user;
-		this.gatheringAuthority = gatheringAuthority;
-	}
+    @Builder
+    private GatheringUserConfirmManager(Gathering gathering, User user, GatheringAuthority gatheringAuthority) {
+        this.gathering = gathering;
+        this.user = user;
+        this.gatheringAuthority = gatheringAuthority;
+    }
 }

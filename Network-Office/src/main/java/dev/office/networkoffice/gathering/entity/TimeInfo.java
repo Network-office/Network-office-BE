@@ -15,24 +15,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TimeInfo {
 
-	@Column(name = "date")
-	private String date;
+    @Column(name = "date")
+    private String date;
 
-	@Column(name = "start_time")
-	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-	private LocalDateTime startTime;
+    @Column(name = "start_time")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    private LocalDateTime startTime;
 
-	@Column(name = "end_time")
-	@DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-	private LocalDateTime endTime;
+    @Column(name = "end_time")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    private LocalDateTime endTime;
 
-	private TimeInfo(String date, LocalDateTime startTime , LocalDateTime endTime) {
-		this.date = date;
-		this.startTime = startTime;
-		this.endTime = endTime;
-	}
+    private TimeInfo(String date, LocalDateTime startTime, LocalDateTime endTime) {
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
-	public static TimeInfo setTimeInfo(String date, LocalDateTime startTime , LocalDateTime endTime) {
-		return new TimeInfo(date, startTime, endTime);
-	}
+    public static TimeInfo setTimeInfo(String date, LocalDateTime startTime, LocalDateTime endTime) {
+        return new TimeInfo(date, startTime, endTime);
+    }
 }

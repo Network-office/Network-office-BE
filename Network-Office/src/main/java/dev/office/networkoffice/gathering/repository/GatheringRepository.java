@@ -9,9 +9,9 @@ import dev.office.networkoffice.gathering.entity.Gathering;
 
 public interface GatheringRepository extends JpaRepository<Gathering, Long> {
 
-	@Query("""
+    @Query("""
             SELECT g
             FROM Gathering g
             WHERE g.placeInfo.si = :si AND g.placeInfo.dong = :dong AND g.placeInfo.gu = :gu""")
-	List<Gathering> findDetailAddressBySiAndDongAndGu(String si, String dong, String gu);
+    List<Gathering> findDetailAddressBySiAndDongAndGu(String si, String dong, String gu);
 }

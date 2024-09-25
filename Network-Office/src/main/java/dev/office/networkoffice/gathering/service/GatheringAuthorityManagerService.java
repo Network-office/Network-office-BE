@@ -17,28 +17,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GatheringAuthorityManagerService {
 
-	private final GatheringManagerRepository gatheringManagerRepository;
+    private final GatheringManagerRepository gatheringManagerRepository;
 
-	@Transactional
-	public void createHostAuthority(Gathering gathering, User host){
-		gatheringManagerRepository.save(GatheringUserConfirmManager.builder()
-			.gatheringAuthority(GatheringAuthority.HOST)
-			.gathering(gathering)
-			.user(host)
-			.build());
-	}
+    @Transactional
+    public void createHostAuthority(Gathering gathering, User host) {
+        gatheringManagerRepository.save(GatheringUserConfirmManager.builder()
+                .gatheringAuthority(GatheringAuthority.HOST)
+                .gathering(gathering)
+                .user(host)
+                .build());
+    }
 
-	@Transactional
-	public void createConfirmedUserAuthority(Gathering gathering, User confirmedUser){
-		gatheringManagerRepository.save(GatheringUserConfirmManager.builder()
-			.gatheringAuthority(GatheringAuthority.CONFIRMED)
-			.gathering(gathering)
-			.user(confirmedUser)
-			.build());
-	}
+    @Transactional
+    public void createConfirmedUserAuthority(Gathering gathering, User confirmedUser) {
+        gatheringManagerRepository.save(GatheringUserConfirmManager.builder()
+                .gatheringAuthority(GatheringAuthority.CONFIRMED)
+                .gathering(gathering)
+                .user(confirmedUser)
+                .build());
+    }
 
-	public GatheringUserConfirmManager findAuthorityManager_withHostIdAndGatheringId(Long hostId, Long gatheringId){
-		//TODO: not found exception
-		return gatheringManagerRepository.findByGatheringAndUser(gatheringId,hostId,GatheringAuthority.HOST).orElseThrow();
-	}
+    public GatheringUserConfirmManager findAuthorityManager_withHostIdAndGatheringId(Long hostId, Long gatheringId) {
+        //TODO: not found exception
+        return gatheringManagerRepository.findByGatheringAndUser(gatheringId, hostId, GatheringAuthority.HOST).orElseThrow();
+    }
 }

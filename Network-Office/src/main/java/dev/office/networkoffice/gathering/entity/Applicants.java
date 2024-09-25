@@ -27,23 +27,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Applicants {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "applicant_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "applicant_id")
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "gathering_id")
-	private Gathering gathering;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gathering_id")
+    private Gathering gathering;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	@Builder
-	private Applicants(Long id, Gathering gathering, User user) {
-		this.id = id;
-		this.gathering = gathering;
-		this.user = user;
-	}
+    @Builder
+    private Applicants(Long id, Gathering gathering, User user) {
+        this.id = id;
+        this.gathering = gathering;
+        this.user = user;
+    }
 }

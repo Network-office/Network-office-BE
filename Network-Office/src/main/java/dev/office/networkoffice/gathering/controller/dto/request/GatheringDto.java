@@ -10,30 +10,30 @@ import dev.office.networkoffice.gathering.entity.TimeInfo;
 import jakarta.persistence.Column;
 
 public record GatheringDto(
-	String title,
-	String category,
-	String place,
+        String title,
+        String category,
+        String place,
 
-	String detailPlace,
-	String description,
+        String detailPlace,
+        String description,
 
-	String si,
-	String dong,
-	String gu,
+        String si,
+        String dong,
+        String gu,
 
-	Double x,
+        Double x,
 
-	Double y,
-	String date,
+        Double y,
+        String date,
 
-	LocalDateTime startTime,
-	LocalDateTime endTime
+        LocalDateTime startTime,
+        LocalDateTime endTime
 ) {
-	public PlaceInfo placeInfoConstructor(){
-		return PlaceInfo.setPlaceInfo(place,detailPlace,si,dong,gu,x,y);
-	}
+    public PlaceInfo placeInfoConstructor() {
+        return PlaceInfo.setPlaceInfo(place, detailPlace, si, dong, gu, x, y);
+    }
 
-	public TimeInfo timeInfoConstructor(){
-		return TimeInfo.setTimeInfo(date, startTime, endTime);
-	}
+    public TimeInfo timeInfoConstructor() {
+        return TimeInfo.setTimeInfo(date, startTime, endTime);
+    }
 }

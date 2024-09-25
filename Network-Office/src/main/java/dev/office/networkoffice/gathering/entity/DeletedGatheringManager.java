@@ -21,26 +21,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeletedGatheringManager {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "deleted_gathering_manager_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "deleted_gathering_manager_id")
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "deleted_gathering_id")
-	private DeletedGathering deletedGathering;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_gathering_id")
+    private DeletedGathering deletedGathering;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	private Long originGatheringId;
+    private Long originGatheringId;
 
-	@Builder
-	private DeletedGatheringManager(DeletedGathering deletedGathering, User user, Long originGatheringId) {
-		this.deletedGathering = deletedGathering;
-		this.user = user;
-		this.originGatheringId = originGatheringId;
-	}
+    @Builder
+    private DeletedGatheringManager(DeletedGathering deletedGathering, User user, Long originGatheringId) {
+        this.deletedGathering = deletedGathering;
+        this.user = user;
+        this.originGatheringId = originGatheringId;
+    }
 
 }
