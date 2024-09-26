@@ -1,6 +1,13 @@
 package dev.office.networkoffice.gathering.domain;
 
 public enum Category {
-    GAME,
-    MOGAKKO
+    SPORT,
+    CULTURE,
+    PARTY,
+    FOOD,
+    VOLUNTEER,
+    COFFEE,
+    STUDY,
+    WALK,
+    ETC
 }

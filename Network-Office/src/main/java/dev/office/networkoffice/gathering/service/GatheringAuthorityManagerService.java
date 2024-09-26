@@ -22,7 +22,7 @@ public class GatheringAuthorityManagerService {
     @Transactional
     public void createHostAuthority(Gathering gathering, User host) {
         gatheringManagerRepository.save(GatheringUserConfirmManager.builder()
-                .gatheringAuthority(GatheringAuthority.HOST)
+                .gatheringAuthority(GatheringAuthority.HOST_USER)
                 .gathering(gathering)
                 .user(host)
                 .build());
@@ -31,7 +31,7 @@ public class GatheringAuthorityManagerService {
     @Transactional
     public void createConfirmedUserAuthority(Gathering gathering, User confirmedUser) {
         gatheringManagerRepository.save(GatheringUserConfirmManager.builder()
-                .gatheringAuthority(GatheringAuthority.CONFIRMED)
+                .gatheringAuthority(GatheringAuthority.CONFIRMED_USER)
                 .gathering(gathering)
                 .user(confirmedUser)
                 .build());
@@ -39,6 +39,6 @@ public class GatheringAuthorityManagerService {
 
     public GatheringUserConfirmManager findAuthorityManager_withHostIdAndGatheringId(Long hostId, Long gatheringId) {
         //TODO: not found exception
-        return gatheringManagerRepository.findByGatheringAndUser(gatheringId, hostId, GatheringAuthority.HOST).orElseThrow();
+        return gatheringManagerRepository.findByGatheringAndUser(gatheringId, hostId, GatheringAuthority.HOST_USER).orElseThrow();
     }
 }
