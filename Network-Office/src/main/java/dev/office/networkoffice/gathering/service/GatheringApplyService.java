@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import dev.office.networkoffice.gathering.entity.Applicants;
+import dev.office.networkoffice.gathering.entity.GatheringApplicants;
 import dev.office.networkoffice.gathering.entity.Gathering;
 import dev.office.networkoffice.gathering.repository.ApplicantRepository;
 import dev.office.networkoffice.gathering.repository.GatheringRepository;
@@ -36,11 +36,11 @@ public class GatheringApplyService {
         //TODO: 기존 모임에 이미 user가 있는지 체크
 
         //신청 엔티티 생성
-        Applicants applicants = Applicants.builder()
+        GatheringApplicants gatheringApplicants = GatheringApplicants.builder()
                 .gathering(gathering)
                 .user(user)
                 .build();
-        applicantRepository.save(applicants);
+        applicantRepository.save(gatheringApplicants);
     }
 
     /**
@@ -51,7 +51,7 @@ public class GatheringApplyService {
      */
 
     @Transactional(readOnly = true)
-    public List<Applicants> readApplicantsByGathering(Long hostId, Long gatheringId) {
+    public List<GatheringApplicants> readApplicantsByGathering(Long hostId, Long gatheringId) {
         managerService.findAuthorityManager_withHostIdAndGatheringId(hostId, gatheringId);
         return applicantRepository.findAllByGatheringId(gatheringId);
     }
@@ -64,8 +64,8 @@ public class GatheringApplyService {
      */
     @Transactional
     public void denyApplicants(Long hostId, Long applicantId) {
-        Applicants applicants = findApplicantsByHost(hostId, applicantId);
-        applicantRepository.delete(applicants);
+        GatheringApplicants gatheringApplicants = findApplicantsByHost(hostId, applicantId);
+        applicantRepository.delete(gatheringApplicants);
     }
 
     /**
@@ -73,12 +73,12 @@ public class GatheringApplyService {
      */
     @Transactional
     public void approvedApplicants(Long hostId, Long applicantId) {
-        Applicants applicants = findApplicantsByHost(hostId, applicantId);
-        managerService.createConfirmedUserAuthority(applicants.getGathering(), applicants.getUser());
-        applicantRepository.delete(applicants);
+        GatheringApplicants gatheringApplicants = findApplicantsByHost(hostId, applicantId);
+        managerService.createConfirmedUserAuthority(gatheringApplicants.getGathering(), gatheringApplicants.getUser());
+        applicantRepository.delete(gatheringApplicants);
     }
 
-    private Applicants findApplicantsByHost(Long hostId, Long applicantId) {
+    private GatheringApplicants findApplicantsByHost(Long hostId, Long applicantId) {
         return applicantRepository.findByIdAndUserId(applicantId, hostId)
                 .orElseThrow(() -> new IllegalArgumentException("신청 없음"));
     }
@@ -93,7 +93,7 @@ public class GatheringApplyService {
                 .orElseThrow(() -> new IllegalArgumentException("모임 없음"));
     }
 
-    private Applicants getApplicantsById(Long applicantId) {
+    private GatheringApplicants getApplicantsById(Long applicantId) {
         return applicantRepository.findById(applicantId)
                 .orElseThrow(() -> new IllegalArgumentException("신청 없음"));
     }

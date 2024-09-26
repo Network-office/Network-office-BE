@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "applicants")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Applicants {
+public class GatheringApplicants {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,7 +41,7 @@ public class Applicants {
     private User user;
 
     @Builder
-    private Applicants(Long id, Gathering gathering, User user) {
+    private GatheringApplicants(Long id, Gathering gathering, User user) {
         this.id = id;
         this.gathering = gathering;
         this.user = user;
