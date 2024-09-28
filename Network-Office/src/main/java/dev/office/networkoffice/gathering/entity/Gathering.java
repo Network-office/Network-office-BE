@@ -6,8 +6,7 @@ import java.util.List;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
 import dev.office.networkoffice.gathering.domain.Category;
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
-import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
-import dev.office.networkoffice.gathering.domain.ReasonForDeportation;
+import dev.office.networkoffice.gatheringAuthority.domain.GatheringAuthorityManager;
 import dev.office.networkoffice.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -51,11 +50,11 @@ public class Gathering {
 
 
     @OneToMany(mappedBy = "gathering", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<GatheringUserConfirmManager> confirmedUserList = new ArrayList<>();
+    private List<GatheringAuthorityManager> confirmedUserList = new ArrayList<>();
 
     @Builder
     private Gathering(String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo,
-                      List<GatheringUserConfirmManager> confirmedUserList) {
+                      List<GatheringAuthorityManager> confirmedUserList) {
         this.title = title;
         this.description = description;
         this.category = category;
@@ -77,7 +76,7 @@ public class Gathering {
      */
     public List<User> getConfiremedUserList() {
         return confirmedUserList.stream()
-                .map(GatheringUserConfirmManager::getUser)
+                .map(GatheringAuthorityManager::getUser)
                 .toList();
     }
 

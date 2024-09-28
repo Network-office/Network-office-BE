@@ -1,11 +1,11 @@
-package dev.office.networkoffice.gathering.repository;
+package dev.office.networkoffice.gatheringApply.repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import dev.office.networkoffice.gathering.entity.GatheringApplicants;
+import dev.office.networkoffice.gatheringApply.domain.GatheringApplicants;
 
 public interface ApplicantRepository extends JpaRepository<GatheringApplicants, Long> {
 

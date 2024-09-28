@@ -1,13 +1,14 @@
-package dev.office.networkoffice.gathering.service;
+package dev.office.networkoffice.gatheringApply.service;
 
 import java.util.List;
 
+import dev.office.networkoffice.gatheringAuthority.service.GatheringAuthorityManagerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import dev.office.networkoffice.gathering.entity.GatheringApplicants;
+import dev.office.networkoffice.gatheringApply.domain.GatheringApplicants;
 import dev.office.networkoffice.gathering.entity.Gathering;
-import dev.office.networkoffice.gathering.repository.ApplicantRepository;
+import dev.office.networkoffice.gatheringApply.repository.ApplicantRepository;
 import dev.office.networkoffice.gathering.repository.GatheringRepository;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;

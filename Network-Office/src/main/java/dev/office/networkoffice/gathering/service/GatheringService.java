@@ -4,7 +4,7 @@ import java.util.List;
 
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringCancelDto;
 import dev.office.networkoffice.gathering.domain.DeletedGatheringStatus;
-import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
+import dev.office.networkoffice.gatheringAuthority.service.GatheringAuthorityManagerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +16,7 @@ import dev.office.networkoffice.gathering.domain.Category;
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
 import dev.office.networkoffice.gathering.entity.DeletedGathering;
 import dev.office.networkoffice.gathering.entity.Gathering;
-import dev.office.networkoffice.gathering.entity.GatheringUserConfirmManager;
+import dev.office.networkoffice.gatheringAuthority.domain.GatheringAuthorityManager;
 import dev.office.networkoffice.gathering.repository.DeletedGatheringRepository;
 import dev.office.networkoffice.gathering.repository.GatheringRepository;
 import dev.office.networkoffice.user.entity.User;
@@ -64,7 +64,7 @@ public class GatheringService {
     //모임 수정
     @Transactional
     public GatheringResponseDto modifyGatheringInfoByHost(Long hostId, GatheringModifyDto modifyDto) {
-        GatheringUserConfirmManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId,
+        GatheringAuthorityManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId,
                 modifyDto.id());
         Gathering gathering = confirmManager.getGathering();
         gathering.modifyGatheringInfo(modifyDto);
@@ -79,7 +79,7 @@ public class GatheringService {
      */
     @Transactional
     public GatheringResponseDto cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
-        GatheringUserConfirmManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId, cancelDto.gatheringId());
+        GatheringAuthorityManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId, cancelDto.gatheringId());
         Gathering gathering = confirmManager.getGathering();
         if (gathering.getDeletedGathering() != null) {
             throw new IllegalArgumentException("이미 삭제된 모임의 id입니다.");

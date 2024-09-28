@@ -1,6 +1,6 @@
-package dev.office.networkoffice.gathering.entity;
+package dev.office.networkoffice.gatheringAuthority.domain;
 
-import dev.office.networkoffice.gathering.domain.GatheringAuthority;
+import dev.office.networkoffice.gathering.entity.Gathering;
 import dev.office.networkoffice.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Getter
-@Table(name = "gatherings")
+@Table(name = "gathering_authority_manager")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GatheringUserConfirmManager {
+public class GatheringAuthorityManager {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "gathering_manager_id")
+    @Column(name = "gathering_authority_manager_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +41,7 @@ public class GatheringUserConfirmManager {
     private GatheringAuthority gatheringAuthority;
 
     @Builder
-    private GatheringUserConfirmManager(Gathering gathering, User user, GatheringAuthority gatheringAuthority) {
+    private GatheringAuthorityManager(Gathering gathering, User user, GatheringAuthority gatheringAuthority) {
         this.gathering = gathering;
         this.user = user;
         this.gatheringAuthority = gatheringAuthority;

@@ -1,5 +1,6 @@
-package dev.office.networkoffice.gathering.entity;
+package dev.office.networkoffice.gatheringApply.domain;
 
+import dev.office.networkoffice.gathering.entity.Gathering;
 import dev.office.networkoffice.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
