@@ -5,19 +5,11 @@ import java.util.List;
 
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
 import dev.office.networkoffice.gathering.domain.Category;
+import dev.office.networkoffice.gathering.domain.GatheringStatus;
+import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
+import dev.office.networkoffice.gathering.domain.ReasonForDeportation;
 import dev.office.networkoffice.user.entity.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,6 +42,14 @@ public class Gathering {
     @Embedded
     private TimeInfo timeInfo;
 
+    @Enumerated(EnumType.STRING)
+    private GatheringStatus gatheringStatus;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_gathering_id")
+    private DeletedGathering deletedGathering;
+
+
     @OneToMany(mappedBy = "gathering", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<GatheringUserConfirmManager> confirmedUserList = new ArrayList<>();
 
@@ -79,6 +79,11 @@ public class Gathering {
         return confirmedUserList.stream()
                 .map(GatheringUserConfirmManager::getUser)
                 .toList();
+    }
+
+    public void changeStatusToCanceled(GatheringStatus status, DeletedGathering deletedGathering){
+        this.gatheringStatus = GatheringStatus.CLOSED;
+        this.deletedGathering = deletedGathering;
     }
 
 	/*

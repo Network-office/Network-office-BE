@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "deleted_gatherings_manager")
+@Table(name = "review")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DeletedGatheringManager {
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "deleted_gathering_manager_id")
+    @Column(name = "review_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,13 +34,16 @@ public class DeletedGatheringManager {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long originGatheringId;
+    private String review; // 성공적으로 마무리한 모임의 리뷰
+
+    private Integer score; // SUCCESS로 모임이 마무리된 경우만 반영되기때문에 nullable 1~5.
 
     @Builder
-    private DeletedGatheringManager(DeletedGathering deletedGathering, User user, Long originGatheringId) {
+    private Review(DeletedGathering deletedGathering, User user, String review, Integer score) {
         this.deletedGathering = deletedGathering;
         this.user = user;
-        this.originGatheringId = originGatheringId;
+        this.score = score;
+        this.review = review;
     }
 
 }

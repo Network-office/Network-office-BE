@@ -7,5 +7,4 @@ public enum ReasonForCanceled {
     INSUFFICIENT_PEOPLE,
     PERSONAL_REASON,
     BAD_CONTENTS_GATHERINGS
-
 }

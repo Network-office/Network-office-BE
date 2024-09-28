@@ -1,12 +1,8 @@
 package dev.office.networkoffice.gathering.entity;
 
-import dev.office.networkoffice.gathering.domain.DeletedType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import dev.office.networkoffice.gathering.domain.DeletedGatheringStatus;
+import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,17 +25,16 @@ public class DeletedGathering {
     @Column(name = "deleted_gathering_id")
     private Long id;
 
-    private String reason;
+    @Enumerated(EnumType.STRING)
+    private DeletedGatheringStatus status;
 
-    private DeletedType deletedType;
+    @Enumerated(EnumType.STRING)
+    private ReasonForCanceled reasonForCanceled; // 모임이 취소된 경우 사유 저장.
 
     @Builder
-    private DeletedGathering(String reason, DeletedType deletedType) {
-        this.reason = reason;
-        this.deletedType = deletedType;
+    private DeletedGathering(ReasonForCanceled reasonForCanceled, DeletedGatheringStatus status) {
+        this.status = status;
+        this.reasonForCanceled = reasonForCanceled;
     }
 
-    public void updateReasonsForDeleted(String reason) {
-        this.reason = reason;
-    }
 }

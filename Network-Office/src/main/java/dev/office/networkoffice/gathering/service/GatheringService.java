@@ -1,8 +1,10 @@
 package dev.office.networkoffice.gathering.service;
 
 import java.util.List;
-import java.util.Optional;
 
+import dev.office.networkoffice.gathering.controller.dto.request.GatheringCancelDto;
+import dev.office.networkoffice.gathering.domain.DeletedGatheringStatus;
+import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,13 +13,11 @@ import dev.office.networkoffice.gathering.controller.dto.request.GatheringModify
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import dev.office.networkoffice.gathering.domain.Category;
-import dev.office.networkoffice.gathering.domain.DeletedType;
+import dev.office.networkoffice.gathering.domain.GatheringStatus;
 import dev.office.networkoffice.gathering.entity.DeletedGathering;
-import dev.office.networkoffice.gathering.entity.DeletedGatheringManager;
 import dev.office.networkoffice.gathering.entity.Gathering;
 import dev.office.networkoffice.gathering.entity.GatheringUserConfirmManager;
 import dev.office.networkoffice.gathering.repository.DeletedGatheringRepository;
-import dev.office.networkoffice.gathering.repository.GatheringManagerRepository;
 import dev.office.networkoffice.gathering.repository.GatheringRepository;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;
@@ -30,8 +30,6 @@ public class GatheringService {
     private final GatheringRepository gatheringRepository;
     private final UserRepository userRepository;
     private final GatheringAuthorityManagerService gatheringAuthorityManagerService;
-    private final DeletedGatheringManagerService deletedGatheringManagerService;
-    private final GatheringManagerRepository gatheringManagerRepository;
     private final DeletedGatheringRepository deletedGatheringRepository;
 
     // 모임 생성
@@ -52,14 +50,13 @@ public class GatheringService {
         return GatheringResponseDto.from(gathering);
     }
 
-    //TODO: 모임 상세 조회 -> 삭제된 모임인지 확인하는 검증 필요할듯.
-
     //모임 정보 시동구 조회
     @Transactional(readOnly = true)
     public GatheringListResponseDto getGatheringByPlace(Long userId, String si, String dong, String gu) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         List<GatheringResponseDto> gatherings = gatheringRepository.findDetailAddressBySiAndDongAndGu(si, dong, gu).stream()
-                .map((GatheringResponseDto::from))
+                .filter((gathering)->gathering.getGatheringStatus().equals(GatheringStatus.ACTIVE))
+                .map(GatheringResponseDto::from)
                 .toList();
         return GatheringListResponseDto.from(gatherings);
     }
@@ -75,32 +72,28 @@ public class GatheringService {
     }
 
     /**
-     * 호스트만 지울 수 있고, 지우기 전에 사유를 기록해야됨.
+     * 모임 파토. 호스트만 지울 수 있고, 지우기 전에 사유를 기록해야됨.
      *
      * @param hostId
-     * @param gatheringId
+     * @param cancelDto
      */
     @Transactional
-    public void deleteGatheringByHost(Long hostId, Long gatheringId, String reason, DeletedType deletedType) {
-        GatheringUserConfirmManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId, gatheringId);
-        Optional<DeletedGatheringManager> deletedGatheringManager = deletedGatheringManagerService.findDeletedGatheringByPastId(gatheringId);
-
-        if (deletedGatheringManager.isPresent()) {
-            //TODO: 이미 삭제된 모임입니다. 에러
+    public GatheringResponseDto cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
+        GatheringUserConfirmManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId, cancelDto.gatheringId());
+        Gathering gathering = confirmManager.getGathering();
+        if (gathering.getDeletedGathering() != null) {
+            throw new IllegalArgumentException("이미 삭제된 모임의 id입니다.");
         }
 
         DeletedGathering deletedGathering = deletedGatheringRepository.save(
                 DeletedGathering.builder()
-                        .reason(reason)
-                        .deletedType(deletedType)
+                        .reasonForCanceled(cancelDto.reason())
+                        .status(DeletedGatheringStatus.CANCELED)
                         .build());
 
-        deletedGatheringManagerService.savingDeletedGathering(
-                confirmManager.getUser(),
-                deletedGathering
-        );
+        gathering.changeStatusToCanceled(GatheringStatus.CLOSED,deletedGathering);
+        return GatheringResponseDto.from(gathering);
 
-        gatheringManagerRepository.delete(confirmManager);//삭제
     }
 
 
