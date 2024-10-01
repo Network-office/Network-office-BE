@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             FROM User u
             WHERE u.oAuthInfo.socialId = :socialId AND u.oAuthInfo.socialType = :socialType""")
     Optional<User> findBySocialLogin(@Param("socialId") String socialId, @Param("socialType") SocialType socialType);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }
