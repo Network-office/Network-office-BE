@@ -10,7 +10,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그인하지 않은 사용자는 자신의 정보를 조회할 수 없다.")
-    void me_Unauthorized() {
+    void profile_Unauthorized() {
         RestAssured.given().log().all()
                 .header("Referer", "swagger-ui")
                 .when().get("api/v1/users/profile")
