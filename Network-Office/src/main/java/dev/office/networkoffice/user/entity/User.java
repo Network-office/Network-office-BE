@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
@@ -42,11 +43,14 @@ public class User extends BaseTimeEntity {
     }
 
     public static User createNewUserWithOAuth(OAuthInfo oAuthInfo, String profileImageUrl) {
+        Assert.notNull(oAuthInfo, "OAuth 정보는 필수입니다.");
+        Assert.hasText(profileImageUrl, "프로필 이미지 URL은 필수입니다.");
         return new User(oAuthInfo, profileImageUrl);
     }
 
-    // TODO: 휴대폰 인증 로직 구현
     public void verifyPhoneNumber(String phoneNumber) {
+        Assert.hasText(phoneNumber, "전화번호는 필수입니다.");
+        Assert.isTrue(!isVerified, "이미 인증된 사용자입니다.");
         this.phoneNumber = phoneNumber;
         this.isVerified = true;
     }
