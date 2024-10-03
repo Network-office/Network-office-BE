@@ -17,8 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -112,15 +113,12 @@ public class VerificationEmailClient {
         }
     }
 
-    // 이메일을 가져올 시작 시간을 설정합니다. 하루 전부터 가져옵니다.
+    // 이메일을 가져올 시작 시간을 설정합니다.
     private SearchTerm createSearchTerm() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, -1);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        ZonedDateTime standard = ZonedDateTime.now(ZoneId.of("UTC"))
+                .minusDays(1); // 하루 전부터 가져옵니다.
+        Date startDate = Date.from(standard.toInstant());
 
-        Date startDate = calendar.getTime();
         return new ReceivedDateTerm(ReceivedDateTerm.GT, startDate);
     }
 
