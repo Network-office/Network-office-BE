@@ -1,8 +1,9 @@
-package dev.office.networkoffice.gathering.controller.dto.docs;
+package dev.office.networkoffice.gathering.controller.docs;
 
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringCancelDto;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringDto;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
+import dev.office.networkoffice.gathering.controller.dto.response.GatheringDeleteResponse;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,7 +58,7 @@ public interface GatheringApiDocs {
     })
     ResponseEntity<GatheringResponseDto> modifyGatheringByHost(Long userId, GatheringModifyDto gatheringModifyDto);
 
-    @Operation(summary = "모임 생성")
+    @Operation(summary = "모임 파토")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -68,5 +69,5 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<GatheringResponseDto> cancelGatheringByHost(@AuthenticationPrincipal Long userId, GatheringCancelDto cancelDto);
+    ResponseEntity<GatheringDeleteResponse> cancelGatheringByHost(@AuthenticationPrincipal Long userId, GatheringCancelDto cancelDto);
 }

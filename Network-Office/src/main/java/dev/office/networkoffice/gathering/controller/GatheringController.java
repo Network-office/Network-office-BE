@@ -1,9 +1,11 @@
-package dev.office.networkoffice.gathering.controller.dto;
+package dev.office.networkoffice.gathering.controller;
 
-import dev.office.networkoffice.gathering.controller.dto.docs.GatheringApiDocs;
+import dev.office.networkoffice.gathering.controller.docs.GatheringApiDocs;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringCancelDto;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringDto;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
+import dev.office.networkoffice.gathering.controller.dto.request.GatheringSuccessDto;
+import dev.office.networkoffice.gathering.controller.dto.response.GatheringDeleteResponse;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import dev.office.networkoffice.gathering.service.GatheringService;
@@ -30,7 +32,7 @@ public class GatheringController implements GatheringApiDocs {
             @RequestParam("dong") String dong,
             @RequestParam("gu") String gu
     ) {
-        return ResponseEntity.ok(gatheringService.getGatheringByPlace(Long.valueOf(userId), si, dong, gu));
+        return ResponseEntity.ok(gatheringService.getGatheringByPlace(userId, si, dong, gu));
     }
 
     @PostMapping("/{userId}")
@@ -45,8 +47,13 @@ public class GatheringController implements GatheringApiDocs {
 
     //delete 매핑은 requestBody를 통상 가지지 않기때문에 post로 작성.
     @PostMapping("/cancel")
-    public ResponseEntity<GatheringResponseDto> cancelGatheringByHost(@AuthenticationPrincipal Long userId, GatheringCancelDto cancelDto) {
+    public ResponseEntity<GatheringDeleteResponse> cancelGatheringByHost(@AuthenticationPrincipal Long userId, GatheringCancelDto cancelDto) {
         return ResponseEntity.ok(gatheringService.cancelGatheringByHost(userId, cancelDto));
+    }
+
+    @PostMapping("/success")
+    public ResponseEntity<GatheringDeleteResponse> successGatheringByHost(@AuthenticationPrincipal Long userId, GatheringSuccessDto successDto) {
+        return ResponseEntity.ok(gatheringService.successGatheringByHost(userId, successDto));
     }
 
 }

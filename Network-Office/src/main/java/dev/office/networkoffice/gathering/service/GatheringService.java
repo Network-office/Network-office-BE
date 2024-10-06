@@ -3,8 +3,10 @@ package dev.office.networkoffice.gathering.service;
 import java.util.List;
 
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringCancelDto;
-import dev.office.networkoffice.gathering.domain.DeletedGatheringStatus;
-import dev.office.networkoffice.gatheringAuthority.service.GatheringAuthorityManagerService;
+import dev.office.networkoffice.gathering.controller.dto.request.GatheringSuccessDto;
+import dev.office.networkoffice.gathering.controller.dto.response.GatheringDeleteResponse;
+import dev.office.networkoffice.gathering.domain.GatheringStatus;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +15,7 @@ import dev.office.networkoffice.gathering.controller.dto.request.GatheringModify
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import dev.office.networkoffice.gathering.domain.Category;
-import dev.office.networkoffice.gathering.domain.GatheringStatus;
-import dev.office.networkoffice.gathering.entity.DeletedGathering;
 import dev.office.networkoffice.gathering.entity.Gathering;
-import dev.office.networkoffice.gatheringAuthority.domain.GatheringAuthorityManager;
-import dev.office.networkoffice.gathering.repository.DeletedGatheringRepository;
 import dev.office.networkoffice.gathering.repository.GatheringRepository;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;
@@ -29,8 +27,6 @@ public class GatheringService {
 
     private final GatheringRepository gatheringRepository;
     private final UserRepository userRepository;
-    private final GatheringAuthorityManagerService gatheringAuthorityManagerService;
-    private final DeletedGatheringRepository deletedGatheringRepository;
 
     // 모임 생성
     @Transactional
@@ -44,9 +40,10 @@ public class GatheringService {
                         .description(dto.description())
                         .placeInfo(dto.placeInfoConstructor())
                         .timeInfo(dto.timeInfoConstructor())
+                        .host(host)
+                        .status(GatheringStatus.IN_PROGRESS)
                         .build()
         );
-        gatheringAuthorityManagerService.createHostAuthority(gathering, host);
         return GatheringResponseDto.from(gathering);
     }
 
@@ -55,7 +52,7 @@ public class GatheringService {
     public GatheringListResponseDto getGatheringByPlace(Long userId, String si, String dong, String gu) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
         List<GatheringResponseDto> gatherings = gatheringRepository.findDetailAddressBySiAndDongAndGu(si, dong, gu).stream()
-                .filter((gathering)->gathering.getGatheringStatus().equals(GatheringStatus.ACTIVE))
+                .filter((gathering) -> gathering.getGatheringStatus().equals(GatheringStatus.IN_PROGRESS))
                 .map(GatheringResponseDto::from)
                 .toList();
         return GatheringListResponseDto.from(gatherings);
@@ -64,9 +61,7 @@ public class GatheringService {
     //모임 수정
     @Transactional
     public GatheringResponseDto modifyGatheringInfoByHost(Long hostId, GatheringModifyDto modifyDto) {
-        GatheringAuthorityManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId,
-                modifyDto.id());
-        Gathering gathering = confirmManager.getGathering();
+        Gathering gathering = verifyHostAndFindGathering(hostId, modifyDto.id());
         gathering.modifyGatheringInfo(modifyDto);
         return GatheringResponseDto.from(gathering);
     }
@@ -78,23 +73,37 @@ public class GatheringService {
      * @param cancelDto
      */
     @Transactional
-    public GatheringResponseDto cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
-        GatheringAuthorityManager confirmManager = gatheringAuthorityManagerService.findAuthorityManager_withHostIdAndGatheringId(hostId, cancelDto.gatheringId());
-        Gathering gathering = confirmManager.getGathering();
-        if (gathering.getDeletedGathering() != null) {
-            throw new IllegalArgumentException("이미 삭제된 모임의 id입니다.");
-        }
+    public GatheringDeleteResponse cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
+        Gathering gathering = verifyHostAndFindGathering(hostId, cancelDto.gatheringId());
 
-        DeletedGathering deletedGathering = deletedGatheringRepository.save(
-                DeletedGathering.builder()
-                        .reasonForCanceled(cancelDto.reason())
-                        .status(DeletedGatheringStatus.CANCELED)
-                        .build());
+        gathering.changeStatusToCancel(cancelDto.reason());
 
-        gathering.changeStatusToCanceled(GatheringStatus.CLOSED,deletedGathering);
-        return GatheringResponseDto.from(gathering);
-
+        return GatheringDeleteResponse.from(gathering.getGatheringStatus().name());
     }
 
+    @Transactional
+    public GatheringDeleteResponse successGatheringByHost(Long hostId, GatheringSuccessDto successDto) {
+        Gathering gathering = verifyHostAndFindGathering(hostId, successDto.gatheringId());
+
+        gathering.changeStatusToSuccessFul(successDto.review(), successDto.star());
+
+        return GatheringDeleteResponse.from(gathering.getGatheringStatus().name());
+    }
+
+    private Gathering verifyHostAndFindGathering(Long hostId, Long gatheringId) {
+        Gathering gathering = gatheringRepository.findById(gatheringId).orElseThrow(
+                () -> new IllegalArgumentException("모임없음.")
+        );
+
+        User host = userRepository.findById(hostId).orElseThrow(
+                () -> new IllegalArgumentException("유저 없음.")
+        );
+
+        if (gathering.getHost().equals(host)) {
+            return gathering;
+        }
+
+        throw new IllegalStateException("권한이 없습니다.");
+    }
 
 }

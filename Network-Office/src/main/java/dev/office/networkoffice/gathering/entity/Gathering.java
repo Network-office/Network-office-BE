@@ -6,7 +6,9 @@ import java.util.List;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
 import dev.office.networkoffice.gathering.domain.Category;
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
-import dev.office.networkoffice.gatheringAuthority.domain.GatheringAuthorityManager;
+import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
+import dev.office.networkoffice.gatheringUser.domain.GatheringUser;
+import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
 import dev.office.networkoffice.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -45,22 +47,33 @@ public class Gathering {
     private GatheringStatus gatheringStatus;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deleted_gathering_id")
-    private DeletedGathering deletedGathering;
+    @JoinColumn(name = "user_id")
+    private User host;
 
+    @Enumerated(EnumType.STRING)
+    private GatheringStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private ReasonForCanceled reasonForCanceled; // 모임이 취소된 경우 사유 저장.
+
+    private String review; // 성공적으로 마무리한 모임의 리뷰
+
+    private Integer star; // SUCCESS로 모임이 마무리된 경우만 반영되기때문에 nullable 1~5.
 
     @OneToMany(mappedBy = "gathering", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<GatheringAuthorityManager> confirmedUserList = new ArrayList<>();
+    private List<GatheringUser> gatheringUserList = new ArrayList<>();
 
     @Builder
-    private Gathering(String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo,
-                      List<GatheringAuthorityManager> confirmedUserList) {
+    private Gathering(User host, String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo,
+                      GatheringStatus status, List<GatheringUser> gatheringUsers) {
+        this.host = host;
         this.title = title;
         this.description = description;
         this.category = category;
         this.placeInfo = placeInfo;
         this.timeInfo = timeInfo;
-        this.confirmedUserList = confirmedUserList;
+        this.status = status;
+        this.gatheringUserList = gatheringUsers;
     }
 
     public void modifyGatheringInfo(GatheringModifyDto modifyDto) {
@@ -75,19 +88,30 @@ public class Gathering {
         확정된 인원 리스트 조회
      */
     public List<User> getConfiremedUserList() {
-        return confirmedUserList.stream()
-                .map(GatheringAuthorityManager::getUser)
+        return gatheringUserList.stream()
+                .filter((gatheringUser) -> gatheringUser.getGatheringUserStatus().equals(GatheringUserStatus.CONFIRMED_USER))
+                .map(GatheringUser::getUser)
                 .toList();
     }
 
-    public void changeStatusToCanceled(GatheringStatus status, DeletedGathering deletedGathering){
-        this.gatheringStatus = GatheringStatus.CLOSED;
-        this.deletedGathering = deletedGathering;
+    /**
+     * 파토난 모임은 파토사유가 필요하다.
+     * @param reasonForCanceled
+     */
+
+    public void changeStatusToCancel(ReasonForCanceled reasonForCanceled){
+        this.gatheringStatus = GatheringStatus.CANCELED;
+        this.reasonForCanceled = reasonForCanceled;
     }
 
-	/*
-		모임 파토
-	 */
+    /**
+     * 성공한 모임은 리뷰와 별점이 필요하다.
+     */
 
+    public void changeStatusToSuccessFul(String review, Integer star){
+        this.gatheringStatus = GatheringStatus.SUCCESSFUL;
+        this.review = review;
+        this.star = star;
+    }
 
 }
