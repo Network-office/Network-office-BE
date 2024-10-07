@@ -1,14 +1,9 @@
 package dev.office.networkoffice.gatheringUser.service;
 
-import java.util.List;
-
 import dev.office.networkoffice.gathering.domain.ReasonForDeportation;
 import dev.office.networkoffice.gatheringUser.controller.request.DenyUserDto;
-import dev.office.networkoffice.gatheringUser.controller.response.ApplicantDeniedUserDto;
 import dev.office.networkoffice.gatheringUser.controller.response.ApplicantUserDto;
 import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
-import dev.office.networkoffice.global.exception.ExternalServiceException;
-import dev.office.networkoffice.global.exception.dto.ExceptionResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +30,6 @@ public class GatheringUserService {
      */
     @Transactional
     public void applyGathering(Long userId, Long gatheringId) {
-
         User user = getUserById(userId);
         Gathering gathering = getGatheringById(gatheringId);
         verifyExistApplicant(user,gathering);
@@ -51,14 +45,11 @@ public class GatheringUserService {
 
     /**
      * 호스트가 볼 수 있는 모임 신청자들 목록
-     *
      * @param hostId
      * @param gatheringId
      */
-
     @Transactional(readOnly = true)
     public ApplicantUserDto readApplicantsByGathering(Long hostId, Long gatheringId) {
-
         Gathering gathering = getGatheringById(gatheringId);
         isHostInGathering(gathering.getHost(), hostId);
         return new ApplicantUserDto(gatheringUserRepository.findAllByGatheringAndGatheringUserStatus(gathering, GatheringUserStatus.APPLY_USER));
@@ -66,13 +57,11 @@ public class GatheringUserService {
 
     /**
      * 모임신청을 거절하면? 거절 사유를 작성하고 변경.
-     *
      * @param hostId
      * @param denyUserDto
      */
     @Transactional
     public void denyApplicants(Long hostId, DenyUserDto denyUserDto) {
-
         GatheringUser gatheringUser = getGatheringUserById(denyUserDto.applicantId());
         isHostInGathering(gatheringUser.getGathering().getHost(), hostId);
         gatheringUser.updateGatheringUserStatus(GatheringUserStatus.DENIED_USER);
@@ -81,16 +70,13 @@ public class GatheringUserService {
 
     /**
      * 유저를 사유와 함께 추방합니다.
-     *
      * @param hostId
      * @param denyUserDto
      */
     @Transactional
     public void deportsUser(Long hostId, DenyUserDto denyUserDto) {
-
         GatheringUser gatheringUser = getGatheringUserById(denyUserDto.applicantId());
         isHostInGathering(gatheringUser.getGathering().getHost(), hostId);
-
         gatheringUser.updateGatheringUserStatus(GatheringUserStatus.DEPORTATION_USER);
         gatheringUser.updateDeportationReason(ReasonForDeportation.valueOf(denyUserDto.reason()));
     }
@@ -100,7 +86,6 @@ public class GatheringUserService {
      */
     @Transactional
     public void approvedApplicants(Long hostId, Long gatheringUserId) {
-
         GatheringUser gatheringUser = getGatheringUserById(gatheringUserId);
         isHostInGathering(gatheringUser.getGathering().getHost(),hostId);
         gatheringUser.updateGatheringUserStatus(GatheringUserStatus.CONFIRMED_USER);
@@ -108,14 +93,11 @@ public class GatheringUserService {
 
     @Transactional
     public void blockedUserInGathering(Long hostId, DenyUserDto denyUserDto) {
-
         GatheringUser gatheringUser = getGatheringUserById(denyUserDto.applicantId());
         isHostInGathering(gatheringUser.getGathering().getHost(),hostId);
         gatheringUser.updateGatheringUserStatus(GatheringUserStatus.BLOCKED_USER);
         gatheringUser.updateDeportationReason(ReasonForDeportation.valueOf(denyUserDto.reason()));
     }
-
-
 
     private User getUserById(Long userId) {
         return userRepository.findById(userId)

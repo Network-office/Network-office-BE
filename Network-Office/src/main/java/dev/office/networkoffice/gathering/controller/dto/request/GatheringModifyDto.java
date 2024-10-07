@@ -1,7 +1,6 @@
 package dev.office.networkoffice.gathering.controller.dto.request;
 
 import java.time.LocalDateTime;
-
 import dev.office.networkoffice.gathering.entity.PlaceInfo;
 import dev.office.networkoffice.gathering.entity.TimeInfo;
 

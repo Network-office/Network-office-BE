@@ -1,13 +1,8 @@
 package dev.office.networkoffice.gathering.controller.dto.request;
 
 import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.parameters.P;
-
 import dev.office.networkoffice.gathering.entity.PlaceInfo;
 import dev.office.networkoffice.gathering.entity.TimeInfo;
-import jakarta.persistence.Column;
 
 public record GatheringDto(
         String title,

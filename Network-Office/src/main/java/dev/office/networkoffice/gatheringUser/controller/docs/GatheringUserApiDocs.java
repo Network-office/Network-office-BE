@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.security.Principal;
+
 @Tag(name = "모임유저", description = "모임 유저 관련 API")
 public interface GatheringUserApiDocs {
     @Operation(summary = "모임 신청")
@@ -23,7 +25,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> applyGathering(Long userId, @PathVariable(name = "gatheringId") Long gatheringId);
+    ResponseEntity<Void> applyGathering(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
 
     @Operation(summary = "모임 신청 목록 조회")
     @ApiResponses(value = {
@@ -36,7 +38,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<ApplicantUserDto> getApplicantsInGatheringByHost(Long userId, @PathVariable(name = "gatheringId") Long gatheringId);
+    ResponseEntity<ApplicantUserDto> getApplicantsInGatheringByHost(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
 
     @Operation(summary = "모임 거절")
     @ApiResponses(value = {
@@ -49,7 +51,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> denyApplicants(Long userId, @RequestBody DenyUserDto denyUserDto);
+    ResponseEntity<Void> denyApplicants(Principal principal, @RequestBody DenyUserDto denyUserDto);
 
     @Operation(summary = "모임 추방")
     @ApiResponses(value = {
@@ -62,7 +64,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> deportsUser(Long userId, @RequestBody DenyUserDto denyUserDto);
+    ResponseEntity<Void> deportsUser(Principal principal, @RequestBody DenyUserDto denyUserDto);
 
     @Operation(summary = "모임 신청 수락")
     @ApiResponses(value = {
@@ -75,7 +77,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> approvedApplicants(Long userId, @PathVariable(name = "applicantId") Long applicantId);
+    ResponseEntity<Void> approvedApplicants(Principal principal, @PathVariable(name = "applicantId") Long applicantId);
 
     @Operation(summary = "모임에 해당 유저 차단")
     @ApiResponses(value = {
@@ -88,7 +90,6 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> blockUserInGathering(Long userId, @RequestBody DenyUserDto denyUserDto);
-
+    ResponseEntity<Void> blockUserInGathering(Principal principal, @RequestBody DenyUserDto denyUserDto);
 
 }

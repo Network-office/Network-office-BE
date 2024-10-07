@@ -3,7 +3,6 @@ package dev.office.networkoffice.gathering.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
 import dev.office.networkoffice.gathering.domain.Category;
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
 import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
@@ -43,15 +42,13 @@ public class Gathering {
     @Embedded
     private TimeInfo timeInfo;
 
-    @Enumerated(EnumType.STRING)
-    private GatheringStatus gatheringStatus;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User host;
 
     @Enumerated(EnumType.STRING)
-    private GatheringStatus status;
+    @Builder.Default
+    private GatheringStatus gatheringStatus = GatheringStatus.IN_PROGRESS;
 
     @Enumerated(EnumType.STRING)
     private ReasonForCanceled reasonForCanceled; // 모임이 취소된 경우 사유 저장.
@@ -65,23 +62,23 @@ public class Gathering {
 
     @Builder
     private Gathering(User host, String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo,
-                      GatheringStatus status, List<GatheringUser> gatheringUsers) {
+                      GatheringStatus gatheringStatus, List<GatheringUser> gatheringUsers) {
         this.host = host;
         this.title = title;
         this.description = description;
         this.category = category;
         this.placeInfo = placeInfo;
         this.timeInfo = timeInfo;
-        this.status = status;
+        this.gatheringStatus = gatheringStatus;
         this.gatheringUserList = gatheringUsers;
     }
 
-    public void modifyGatheringInfo(GatheringModifyDto modifyDto) {
-        this.title = modifyDto.title();
-        this.description = modifyDto.description();
-        this.category = Category.valueOf(modifyDto.category());
-        this.placeInfo = modifyDto.placeInfoConstructor();
-        this.timeInfo = modifyDto.timeInfoConstructor();
+    public void modifyGatheringInfo(String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo) {
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.placeInfo = placeInfo;
+        this.timeInfo = timeInfo;
     }
 
     /*
@@ -89,16 +86,20 @@ public class Gathering {
      */
     public List<User> getConfiremedUserList() {
         return gatheringUserList.stream()
-                .filter((gatheringUser) -> gatheringUser.getGatheringUserStatus().equals(GatheringUserStatus.CONFIRMED_USER))
+                .filter(this::isConfirmedUser)
                 .map(GatheringUser::getUser)
                 .toList();
+    }
+
+    private boolean isConfirmedUser(GatheringUser gatheringUser){
+        return gatheringUser.getGatheringUserStatus()
+                .equals(GatheringUserStatus.CONFIRMED_USER);
     }
 
     /**
      * 파토난 모임은 파토사유가 필요하다.
      * @param reasonForCanceled
      */
-
     public void changeStatusToCancel(ReasonForCanceled reasonForCanceled){
         this.gatheringStatus = GatheringStatus.CANCELED;
         this.reasonForCanceled = reasonForCanceled;
@@ -107,7 +108,6 @@ public class Gathering {
     /**
      * 성공한 모임은 리뷰와 별점이 필요하다.
      */
-
     public void changeStatusToSuccessFul(String review, Integer star){
         this.gatheringStatus = GatheringStatus.SUCCESSFUL;
         this.review = review;

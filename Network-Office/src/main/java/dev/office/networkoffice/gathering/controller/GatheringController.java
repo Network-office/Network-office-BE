@@ -9,11 +9,11 @@ import dev.office.networkoffice.gathering.controller.dto.response.GatheringDelet
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import dev.office.networkoffice.gathering.service.GatheringService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 
 @RestController
@@ -22,38 +22,45 @@ import org.springframework.web.bind.annotation.*;
 public class GatheringController implements GatheringApiDocs {
 
     private final GatheringService gatheringService;
-    private final HttpSession httpSession;
-
 
     @GetMapping
     public ResponseEntity<GatheringListResponseDto> findGatheringList(
-            @RequestParam("userId") Long userId,
+            Principal principal,
             @RequestParam("si") String si,
             @RequestParam("dong") String dong,
             @RequestParam("gu") String gu
     ) {
+        Long userId = findUserIdInSession(principal);
         return ResponseEntity.ok(gatheringService.getGatheringByPlace(userId, si, dong, gu));
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<GatheringResponseDto> createGathering(Long userId, @RequestBody GatheringDto gatheringDto) {
+    public ResponseEntity<GatheringResponseDto> createGathering(Principal principal, @RequestBody GatheringDto gatheringDto) {
+        Long userId = findUserIdInSession(principal);
         return ResponseEntity.ok(gatheringService.createGathering(userId, gatheringDto));
     }
 
     @PutMapping()
-    public ResponseEntity<GatheringResponseDto> modifyGatheringByHost(@AuthenticationPrincipal Long userId, @RequestBody GatheringModifyDto gatheringModifyDto) {
+    public ResponseEntity<GatheringResponseDto> modifyGatheringByHost(Principal principal, @RequestBody GatheringModifyDto gatheringModifyDto) {
+        Long userId = findUserIdInSession(principal);
         return ResponseEntity.ok(gatheringService.modifyGatheringInfoByHost(userId, gatheringModifyDto));
     }
 
     //delete 매핑은 requestBody를 통상 가지지 않기때문에 post로 작성.
     @PostMapping("/cancel")
-    public ResponseEntity<GatheringDeleteResponse> cancelGatheringByHost(@AuthenticationPrincipal Long userId, GatheringCancelDto cancelDto) {
+    public ResponseEntity<GatheringDeleteResponse> cancelGatheringByHost(Principal principal, GatheringCancelDto cancelDto) {
+        Long userId = findUserIdInSession(principal);
         return ResponseEntity.ok(gatheringService.cancelGatheringByHost(userId, cancelDto));
     }
 
     @PostMapping("/success")
-    public ResponseEntity<GatheringDeleteResponse> successGatheringByHost(@AuthenticationPrincipal Long userId, GatheringSuccessDto successDto) {
+    public ResponseEntity<GatheringDeleteResponse> successGatheringByHost(Principal principal, GatheringSuccessDto successDto) {
+        Long userId = findUserIdInSession(principal);
         return ResponseEntity.ok(gatheringService.successGatheringByHost(userId, successDto));
+    }
+
+    private Long findUserIdInSession(Principal principal){
+        return Long.parseLong(principal.getName());
     }
 
 }

@@ -31,7 +31,7 @@ public class GatheringService {
     // 모임 생성
     @Transactional
     public GatheringResponseDto createGathering(Long userId, GatheringDto dto) {
-        User host = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+        User host = findUser(userId);
 
         Gathering gathering = gatheringRepository.save(
                 Gathering.builder()
@@ -41,7 +41,6 @@ public class GatheringService {
                         .placeInfo(dto.placeInfoConstructor())
                         .timeInfo(dto.timeInfoConstructor())
                         .host(host)
-                        .status(GatheringStatus.IN_PROGRESS)
                         .build()
         );
         return GatheringResponseDto.from(gathering);
@@ -50,19 +49,32 @@ public class GatheringService {
     //모임 정보 시동구 조회
     @Transactional(readOnly = true)
     public GatheringListResponseDto getGatheringByPlace(Long userId, String si, String dong, String gu) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저 없음"));
-        List<GatheringResponseDto> gatherings = gatheringRepository.findDetailAddressBySiAndDongAndGu(si, dong, gu).stream()
-                .filter((gathering) -> gathering.getGatheringStatus().equals(GatheringStatus.IN_PROGRESS))
+        List<GatheringResponseDto> gatherings = gatheringRepository.findDetailAddressBySiAndDongAndGu(si, dong, gu)
+                .stream()
+                .filter(this::isGatheringInProgress)
                 .map(GatheringResponseDto::from)
                 .toList();
         return GatheringListResponseDto.from(gatherings);
+    }
+
+    private boolean isGatheringInProgress(Gathering gathering){
+        return gathering.getGatheringStatus()
+                .equals(GatheringStatus.IN_PROGRESS);
     }
 
     //모임 수정
     @Transactional
     public GatheringResponseDto modifyGatheringInfoByHost(Long hostId, GatheringModifyDto modifyDto) {
         Gathering gathering = verifyHostAndFindGathering(hostId, modifyDto.id());
-        gathering.modifyGatheringInfo(modifyDto);
+
+        gathering.modifyGatheringInfo(
+                modifyDto.title(),
+                modifyDto.description(),
+                Category.valueOf(modifyDto.category()),
+                modifyDto.placeInfoConstructor(),
+                modifyDto.timeInfoConstructor()
+        );
+
         return GatheringResponseDto.from(gathering);
     }
 
@@ -91,19 +103,29 @@ public class GatheringService {
     }
 
     private Gathering verifyHostAndFindGathering(Long hostId, Long gatheringId) {
-        Gathering gathering = gatheringRepository.findById(gatheringId).orElseThrow(
-                () -> new IllegalArgumentException("모임없음.")
-        );
+        Gathering gathering = findGathering(gatheringId);
 
-        User host = userRepository.findById(hostId).orElseThrow(
-                () -> new IllegalArgumentException("유저 없음.")
-        );
+        User host = findUser(hostId);
 
         if (gathering.getHost().equals(host)) {
             return gathering;
         }
 
         throw new IllegalStateException("권한이 없습니다.");
+    }
+
+    private User findUser(Long userId){
+        return userRepository.findById(userId)
+                .orElseThrow(
+                () -> new IllegalArgumentException("유저 없음.")
+        );
+    }
+
+    private Gathering findGathering(Long gatheringId){
+        return gatheringRepository.findById(gatheringId)
+                .orElseThrow(
+                () -> new IllegalArgumentException("모임없음.")
+        );
     }
 
 }
