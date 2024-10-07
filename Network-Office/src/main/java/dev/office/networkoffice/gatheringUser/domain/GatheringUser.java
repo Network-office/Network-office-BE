@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 /**
  * 신청 테이블을 따로 작성한다.
@@ -35,7 +36,8 @@ public class GatheringUser {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private GatheringUserStatus gatheringUserStatus;
+    @Builder.Default
+    private GatheringUserStatus gatheringUserStatus = GatheringUserStatus.APPLY_USER;
 
     private String deniedReason;
 
@@ -50,16 +52,17 @@ public class GatheringUser {
     }
 
     public void updateGatheringUserStatus(GatheringUserStatus status) {
-        if (status != null) {
-            this.gatheringUserStatus = status;
-        }
+        Assert.notNull(status,"모임 유저 상태는 null일 수 없습니다.");
+        this.gatheringUserStatus = status;
     }
 
     public void updateDeniedReason(String deniedReason){
+        Assert.hasText(deniedReason, "거부사유는 비어 있을 수 없습니다.");
         this.deniedReason = deniedReason;
     }
 
     public void updateDeportationReason(ReasonForDeportation reasonForDeportation){
+        Assert.notNull(reasonForDeportation, "추방사유는 null일 수 없습니다.");
         this.reasonForDeportation = reasonForDeportation;
     }
 }

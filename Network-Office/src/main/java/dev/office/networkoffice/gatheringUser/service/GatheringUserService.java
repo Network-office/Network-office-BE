@@ -38,8 +38,8 @@ public class GatheringUserService {
         GatheringUser gatheringUser = GatheringUser.builder()
                 .gathering(gathering)
                 .user(user)
-                .gatheringUserStatus(GatheringUserStatus.APPLY_USER)
                 .build();
+
         gatheringUserRepository.save(gatheringUser);
     }
 
