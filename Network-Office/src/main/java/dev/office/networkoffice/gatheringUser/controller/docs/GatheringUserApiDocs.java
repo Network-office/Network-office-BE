@@ -25,7 +25,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> applyGathering(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
+    void applyGathering(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
 
     @Operation(summary = "모임 신청 목록 조회")
     @ApiResponses(value = {
@@ -38,7 +38,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<ApplicantUserDto> getApplicantsInGatheringByHost(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
+    ApplicantUserDto getApplicantsInGatheringByHost(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
 
     @Operation(summary = "모임 거절")
     @ApiResponses(value = {
@@ -51,7 +51,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> denyApplicants(Principal principal, @RequestBody DenyUserDto denyUserDto);
+    void denyApplicants(Principal principal, @RequestBody DenyUserDto denyUserDto);
 
     @Operation(summary = "모임 추방")
     @ApiResponses(value = {
@@ -64,7 +64,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> deportsUser(Principal principal, @RequestBody DenyUserDto denyUserDto);
+    void deportsUser(Principal principal, @RequestBody DenyUserDto denyUserDto);
 
     @Operation(summary = "모임 신청 수락")
     @ApiResponses(value = {
@@ -77,7 +77,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> approvedApplicants(Principal principal, @PathVariable(name = "applicantId") Long applicantId);
+    void approvedApplicants(Principal principal, @PathVariable(name = "applicantId") Long applicantId);
 
     @Operation(summary = "모임에 해당 유저 차단")
     @ApiResponses(value = {
@@ -90,6 +90,6 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ResponseEntity<Void> blockUserInGathering(Principal principal, @RequestBody DenyUserDto denyUserDto);
+    void blockUserInGathering(Principal principal, @RequestBody DenyUserDto denyUserDto);
 
 }
