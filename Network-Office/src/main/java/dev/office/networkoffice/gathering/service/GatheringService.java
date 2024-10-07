@@ -4,7 +4,7 @@ import java.util.List;
 
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringCancelDto;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringSuccessDto;
-import dev.office.networkoffice.gathering.controller.dto.response.GatheringDeleteResponse;
+import dev.office.networkoffice.gathering.controller.dto.response.GatheringClosedResponse;
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
 
 import org.springframework.stereotype.Service;
@@ -85,21 +85,21 @@ public class GatheringService {
      * @param cancelDto
      */
     @Transactional
-    public GatheringDeleteResponse cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
+    public GatheringClosedResponse cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
         Gathering gathering = verifyHostAndFindGathering(hostId, cancelDto.gatheringId());
 
         gathering.changeStatusToCancel(cancelDto.reason());
 
-        return GatheringDeleteResponse.from(gathering.getGatheringStatus().name());
+        return GatheringClosedResponse.from(gathering.getGatheringStatus().name());
     }
 
     @Transactional
-    public GatheringDeleteResponse successGatheringByHost(Long hostId, GatheringSuccessDto successDto) {
+    public GatheringClosedResponse successGatheringByHost(Long hostId, GatheringSuccessDto successDto) {
         Gathering gathering = verifyHostAndFindGathering(hostId, successDto.gatheringId());
 
         gathering.changeStatusToSuccessFul(successDto.review(), successDto.star());
 
-        return GatheringDeleteResponse.from(gathering.getGatheringStatus().name());
+        return GatheringClosedResponse.from(gathering.getGatheringStatus().name());
     }
 
     private Gathering verifyHostAndFindGathering(Long hostId, Long gatheringId) {
