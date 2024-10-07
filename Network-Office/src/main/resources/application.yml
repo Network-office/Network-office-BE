@@ -21,12 +21,15 @@ spring:
       hibernate:
         format_sql: true
 
-  # Local 환경 Redis 의존성 제외
-  # session.store-type 옵션이 deprecated, 임시로 사용
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
+  session:
+    redis:
+      namespace: ${REDIS_SESSION_NAMESPACE}
 
 server:
   servlet:
@@ -41,6 +44,13 @@ oauth:
     access-token-request-url: ${OAUTH_KAKAO_ACCESS_TOKEN_REQUEST_URI}
     user-information-request-url: ${OAUTH_KAKAO_USER_INFORMATION_REQUEST_URI}
     rest-api-key: ${OAUTH_KAKAO_REST_API_KEY}
+
+email:
+  imap:
+    server: ${EMAIL_IMAP_SERVER}
+    port: ${EMAIL_IMAP_PORT}
+  account: ${EMAIL_ACCOUNT}
+  password: ${EMAIL_PASSWORD}
 
 swagger:
   server:
@@ -72,16 +82,6 @@ spring:
   h2:
     console:
       enabled: false
-
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
-
-  session:
-    redis:
-      namespace: ${REDIS_SESSION_NAMESPACE}
 
 server:
   servlet:
