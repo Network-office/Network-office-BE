@@ -7,28 +7,35 @@ import dev.office.networkoffice.gathering.entity.TimeInfo;
 public record GatheringDto(
         String title,
         String category,
-        String place,
-
-        String detailPlace,
         String description,
+
+        String place,
+        String detailPlace,
 
         String si,
         String dong,
         String gu,
 
         Double x,
-
         Double y,
-        String date,
 
+        String date,
         LocalDateTime startTime,
         LocalDateTime endTime
 ) {
     public PlaceInfo placeInfoConstructor() {
-        return PlaceInfo.setPlaceInfo(place, detailPlace, si, dong, gu, x, y);
+        return PlaceInfo.builder()
+                .place(place).detailPlace(detailPlace)
+                .si(si).dong(dong).gu(gu)
+                .x(x).y(y)
+                .build();
     }
 
     public TimeInfo timeInfoConstructor() {
-        return TimeInfo.setTimeInfo(date, startTime, endTime);
+        return TimeInfo.builder()
+                .date(date)
+                .startTime(startTime)
+                .endTime(endTime)
+                .build();
     }
 }

@@ -6,5 +6,4 @@ public enum GatheringUserStatus {
     APPLY_USER,
     DEPORTATION_USER,
     DENIED_USER
-
 }

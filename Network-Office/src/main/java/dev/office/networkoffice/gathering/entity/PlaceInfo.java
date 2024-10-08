@@ -3,6 +3,7 @@ package dev.office.networkoffice.gathering.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,8 +33,10 @@ public class PlaceInfo {
     @Column(name = "y_position")
     private Double y;
 
-
-    private PlaceInfo(String place, String detailPlace, String si, String dong, String gu, Double x, Double y) {
+    @Builder
+    private PlaceInfo(String place, String detailPlace,
+                      String si, String dong, String gu,
+                      Double x, Double y) {
         this.place = place;
         this.detailPlace = detailPlace;
         this.si = si;
@@ -41,9 +44,5 @@ public class PlaceInfo {
         this.gu = gu;
         this.x = x;
         this.y = y;
-    }
-
-    public static PlaceInfo setPlaceInfo(String place, String detailPlace, String si, String dong, String gu, Double x, Double y) {
-        return new PlaceInfo(place, detailPlace, si, dong, gu, x, y);
     }
 }

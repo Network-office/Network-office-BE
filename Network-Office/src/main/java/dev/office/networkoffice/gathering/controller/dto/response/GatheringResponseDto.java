@@ -9,16 +9,15 @@ import lombok.Builder;
 public record GatheringResponseDto(
         String title,
         String category,
-        String place,
-
-        String detailPlace,
         String description,
 
+        String place,
+        String detailPlace,
+
         Double x,
-
         Double y,
-        String date,
 
+        String date,
         LocalDateTime startTime,
         LocalDateTime endTime
 ) {
@@ -26,9 +25,9 @@ public record GatheringResponseDto(
         return GatheringResponseDto.builder()
                 .title(gathering.getTitle())
                 .category(String.valueOf(gathering.getCategory()))
+                .description(gathering.getDescription())
                 .place(gathering.getPlaceInfo().getPlace())
                 .detailPlace(gathering.getPlaceInfo().getDetailPlace())
-                .description(gathering.getDescription())
                 .x(gathering.getPlaceInfo().getX())
                 .y(gathering.getPlaceInfo().getY())
                 .date(gathering.getTimeInfo().getDate())

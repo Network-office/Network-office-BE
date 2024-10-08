@@ -2,6 +2,7 @@ package dev.office.networkoffice.gathering.entity;
 
 import java.time.LocalDateTime;
 
+import lombok.Builder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
@@ -26,13 +27,10 @@ public class TimeInfo {
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalDateTime endTime;
 
+    @Builder
     private TimeInfo(String date, LocalDateTime startTime, LocalDateTime endTime) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-    }
-
-    public static TimeInfo setTimeInfo(String date, LocalDateTime startTime, LocalDateTime endTime) {
-        return new TimeInfo(date, startTime, endTime);
     }
 }

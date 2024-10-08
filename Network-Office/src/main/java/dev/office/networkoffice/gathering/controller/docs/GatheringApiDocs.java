@@ -2,7 +2,6 @@ package dev.office.networkoffice.gathering.controller.docs;
 
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringCancelDto;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringDto;
-import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringSuccessDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringClosedResponse;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
@@ -30,7 +29,6 @@ public interface GatheringApiDocs {
     })
     GatheringListResponseDto findGatheringList(Principal principal, String si, String dong, String gu);
 
-
     @Operation(summary = "모임 생성")
     @ApiResponses(value = {
             @ApiResponse(
@@ -55,7 +53,9 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringResponseDto modifyGatheringByHost(Principal principal, GatheringModifyDto gatheringModifyDto);
+    GatheringResponseDto modifyGatheringByHost(Principal principal,
+                                               Long gatheringId,
+                                               GatheringDto gatheringDto);
 
     @Operation(summary = "모임 파토")
     @ApiResponses(value = {
@@ -82,5 +82,4 @@ public interface GatheringApiDocs {
             )
     })
     GatheringClosedResponse successGatheringByHost(Principal principal, GatheringSuccessDto successDto);
-
 }

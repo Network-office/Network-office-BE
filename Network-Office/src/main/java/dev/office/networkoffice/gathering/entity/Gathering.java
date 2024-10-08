@@ -48,8 +48,7 @@ public class Gathering {
     private User host;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private GatheringStatus gatheringStatus = GatheringStatus.IN_PROGRESS;
+    private GatheringStatus gatheringStatus;
 
     @Enumerated(EnumType.STRING)
     private ReasonForCanceled reasonForCanceled; // 모임이 취소된 경우 사유 저장.
@@ -62,19 +61,28 @@ public class Gathering {
     private List<GatheringUser> gatheringUserList = new ArrayList<>();
 
     @Builder
-    private Gathering(User host, String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo,
-                      GatheringStatus gatheringStatus, List<GatheringUser> gatheringUsers) {
+    private Gathering(User host,
+                      String title,
+                      String description,
+                      Category category,
+                      PlaceInfo placeInfo,
+                      TimeInfo timeInfo,
+                      List<GatheringUser> gatheringUsers) {
         this.host = host;
         this.title = title;
         this.description = description;
         this.category = category;
         this.placeInfo = placeInfo;
         this.timeInfo = timeInfo;
-        this.gatheringStatus = gatheringStatus;
+        this.gatheringStatus = GatheringStatus.IN_PROGRESS;
         this.gatheringUserList = gatheringUsers;
     }
 
-    public void modifyGatheringInfo(String title, String description, Category category, PlaceInfo placeInfo, TimeInfo timeInfo) {
+    public void modifyGatheringInfo(String title,
+                                    String description,
+                                    Category category,
+                                    PlaceInfo placeInfo,
+                                    TimeInfo timeInfo) {
         this.title = title;
         this.description = description;
         this.category = category;
@@ -82,9 +90,6 @@ public class Gathering {
         this.timeInfo = timeInfo;
     }
 
-    /*
-        확정된 인원 리스트 조회
-     */
     public List<User> getConfiremedUserList() {
         return gatheringUserList.stream()
                 .filter(this::isConfirmedUser)
@@ -92,30 +97,22 @@ public class Gathering {
                 .toList();
     }
 
-    private boolean isConfirmedUser(GatheringUser gatheringUser){
+    private boolean isConfirmedUser(GatheringUser gatheringUser) {
         return gatheringUser.getGatheringUserStatus()
                 .equals(GatheringUserStatus.CONFIRMED_USER);
     }
 
-    /**
-     * 파토난 모임은 파토사유가 필요하다.
-     * @param reasonForCanceled
-     */
-    public void changeStatusToCancel(ReasonForCanceled reasonForCanceled){
-        Assert.notNull(reasonForCanceled,"취소 사유는 null이 될 수 없습니다.");
+    public void changeStatusToCancel(ReasonForCanceled reasonForCanceled) {
+        Assert.notNull(reasonForCanceled, "취소 사유는 null이 될 수 없습니다.");
         this.gatheringStatus = GatheringStatus.CANCELED;
         this.reasonForCanceled = reasonForCanceled;
     }
 
-    /**
-     * 성공한 모임은 리뷰와 별점이 필요하다.
-     */
-    public void changeStatusToSuccessFul(String review, Integer star){
-        Assert.hasText(review,"review는 비어있을 수 없습니다.");
+    public void changeStatusToSuccessFul(String review, Integer star) {
+        Assert.hasText(review, "review는 비어있을 수 없습니다.");
         Assert.notNull(star, "별점을 남겨주세요.");
         this.gatheringStatus = GatheringStatus.SUCCESSFUL;
         this.review = review;
         this.star = star;
     }
-
 }

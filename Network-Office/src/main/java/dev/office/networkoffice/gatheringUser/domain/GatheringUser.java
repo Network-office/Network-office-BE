@@ -36,33 +36,43 @@ public class GatheringUser {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private GatheringUserStatus gatheringUserStatus = GatheringUserStatus.APPLY_USER;
+    private GatheringUserStatus gatheringUserStatus;
 
     private String deniedReason;
 
     private ReasonForDeportation reasonForDeportation;
 
     @Builder
-    private GatheringUser(Long id, Gathering gathering, User user, GatheringUserStatus gatheringUserStatus) {
+    private GatheringUser(Long id, Gathering gathering, User user) {
         this.id = id;
         this.gathering = gathering;
         this.user = user;
-        this.gatheringUserStatus = gatheringUserStatus;
+        this.gatheringUserStatus = GatheringUserStatus.APPLY_USER;
     }
 
-    public void updateGatheringUserStatus(GatheringUserStatus status) {
-        Assert.notNull(status,"모임 유저 상태는 null일 수 없습니다.");
-        this.gatheringUserStatus = status;
+    public void denyApplicants(String reason) {
+        Assert.hasText(reason, "거부사유는 비어 있을 수 없습니다.");
+        this.gatheringUserStatus = GatheringUserStatus.DENIED_USER;
+        this.deniedReason = reason;
     }
 
-    public void updateDeniedReason(String deniedReason){
-        Assert.hasText(deniedReason, "거부사유는 비어 있을 수 없습니다.");
-        this.deniedReason = deniedReason;
+    public void deportApplicants(String reason) {
+        Assert.hasText(reason, "추방사유는 비어 있을 수 없습니다.");
+        this.gatheringUserStatus = GatheringUserStatus.DEPORTATION_USER;
+        this.reasonForDeportation = ReasonForDeportation.valueOf(reason);
     }
 
-    public void updateDeportationReason(ReasonForDeportation reasonForDeportation){
-        Assert.notNull(reasonForDeportation, "추방사유는 null일 수 없습니다.");
-        this.reasonForDeportation = reasonForDeportation;
+    public void confirmApplicants() {
+        this.gatheringUserStatus = GatheringUserStatus.CONFIRMED_USER;
+    }
+
+    public void blockApplicants(String reason) {
+        Assert.hasText(reason, "차단사유는 비어 있을 수 없습니다.");
+        this.gatheringUserStatus = GatheringUserStatus.BLOCKED_USER;
+    }
+
+    public boolean canReapply() {
+        GatheringUserStatus status = gatheringUserStatus;
+        return status == GatheringUserStatus.DEPORTATION_USER || status == GatheringUserStatus.BLOCKED_USER;
     }
 }

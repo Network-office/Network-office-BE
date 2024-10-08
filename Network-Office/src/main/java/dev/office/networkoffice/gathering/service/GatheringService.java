@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.office.networkoffice.gathering.controller.dto.request.GatheringDto;
-import dev.office.networkoffice.gathering.controller.dto.request.GatheringModifyDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import dev.office.networkoffice.gathering.domain.Category;
@@ -31,41 +30,45 @@ public class GatheringService {
     // 모임 생성
     @Transactional
     public GatheringResponseDto createGathering(Long userId, GatheringDto dto) {
-        User host = findUser(userId);
-
-        Gathering gathering = gatheringRepository.save(
-                Gathering.builder()
-                        .category(Category.valueOf(dto.category()))
-                        .title(dto.title())
-                        .description(dto.description())
-                        .placeInfo(dto.placeInfoConstructor())
-                        .timeInfo(dto.timeInfoConstructor())
-                        .host(host)
-                        .build()
-        );
-        return GatheringResponseDto.from(gathering);
+        User host = findUserById(userId);
+        Gathering gathering = createGatheringByRequest(dto, host);
+        Gathering savedGathering = gatheringRepository.save(gathering);
+        return GatheringResponseDto.from(savedGathering);
     }
 
-    //모임 정보 시동구 조회
+    private Gathering createGatheringByRequest(GatheringDto dto, User host) {
+        return Gathering.builder()
+                .category(Category.valueOf(dto.category()))
+                .title(dto.title())
+                .description(dto.description())
+                .placeInfo(dto.placeInfoConstructor())
+                .timeInfo(dto.timeInfoConstructor())
+                .host(host)
+                .build();
+    }
+
+    // 모임 정보 시동구 조회
     @Transactional(readOnly = true)
-    public GatheringListResponseDto getGatheringByPlace(Long userId, String si, String dong, String gu) {
+    public GatheringListResponseDto getGatheringByPlace(String si, String dong, String gu) {
+        // TODO: 분리
         List<GatheringResponseDto> gatherings = gatheringRepository.findDetailAddressBySiAndDongAndGu(si, dong, gu)
                 .stream()
                 .filter(this::isGatheringInProgress)
                 .map(GatheringResponseDto::from)
                 .toList();
+
         return GatheringListResponseDto.from(gatherings);
     }
 
-    private boolean isGatheringInProgress(Gathering gathering){
+    private boolean isGatheringInProgress(Gathering gathering) {
         return gathering.getGatheringStatus()
                 .equals(GatheringStatus.IN_PROGRESS);
     }
 
-    //모임 수정
+    // 모임 수정
     @Transactional
-    public GatheringResponseDto modifyGatheringInfoByHost(Long hostId, GatheringModifyDto modifyDto) {
-        Gathering gathering = verifyHostAndFindGathering(hostId, modifyDto.id());
+    public GatheringResponseDto modifyGatheringInfoByHost(Long hostId, Long gatheringId, GatheringDto modifyDto) {
+        Gathering gathering = verifyHostAndFindGathering(hostId, gatheringId);
 
         gathering.modifyGatheringInfo(
                 modifyDto.title(),
@@ -78,54 +81,32 @@ public class GatheringService {
         return GatheringResponseDto.from(gathering);
     }
 
-    /**
-     * 모임 파토. 호스트만 지울 수 있고, 지우기 전에 사유를 기록해야됨.
-     *
-     * @param hostId
-     * @param cancelDto
-     */
-    @Transactional
-    public GatheringClosedResponse cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
-        Gathering gathering = verifyHostAndFindGathering(hostId, cancelDto.gatheringId());
-
-        gathering.changeStatusToCancel(cancelDto.reason());
-
-        return GatheringClosedResponse.from(gathering.getGatheringStatus().name());
-    }
-
     @Transactional
     public GatheringClosedResponse successGatheringByHost(Long hostId, GatheringSuccessDto successDto) {
         Gathering gathering = verifyHostAndFindGathering(hostId, successDto.gatheringId());
-
         gathering.changeStatusToSuccessFul(successDto.review(), successDto.star());
 
         return GatheringClosedResponse.from(gathering.getGatheringStatus().name());
     }
 
+    /**
+     * 모임 파토. 호스트만 지울 수 있고, 지우기 전에 사유를 기록해야됨.
+     */
+    @Transactional
+    public GatheringClosedResponse cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
+        Gathering gathering = verifyHostAndFindGathering(hostId, cancelDto.gatheringId());
+        gathering.changeStatusToCancel(cancelDto.reason());
+
+        return GatheringClosedResponse.from(gathering.getGatheringStatus().name());
+    }
+
     private Gathering verifyHostAndFindGathering(Long hostId, Long gatheringId) {
-        Gathering gathering = findGathering(gatheringId);
-
-        User host = findUser(hostId);
-
-        if (gathering.getHost().equals(host)) {
-            return gathering;
-        }
-
-        throw new IllegalStateException("권한이 없습니다.");
+        return gatheringRepository.findByHostIdAndId(hostId, gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("호스트가 아니거나 모임을 찾을 수 없습니다."));
     }
 
-    private User findUser(Long userId){
+    private User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(
-                () -> new IllegalArgumentException("유저 없음.")
-        );
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
     }
-
-    private Gathering findGathering(Long gatheringId){
-        return gatheringRepository.findById(gatheringId)
-                .orElseThrow(
-                () -> new IllegalArgumentException("모임없음.")
-        );
-    }
-
 }
