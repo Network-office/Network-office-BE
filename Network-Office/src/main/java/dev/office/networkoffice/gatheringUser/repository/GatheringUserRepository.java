@@ -16,8 +16,16 @@ public interface GatheringUserRepository extends JpaRepository<GatheringUser, Lo
     @Query("""
             SELECT m
             FROM GatheringUser m
-            WHERE m.gathering = :gathering AND m.gatheringUserStatus = :status""")
-    List<GatheringUser> findAllByGatheringAndGatheringUserStatus(Gathering gathering, GatheringUserStatus status);
+            WHERE m.gathering.id = :gatheringId
+            AND m.gathering.host.id = :hostId
+            AND m.gatheringUserStatus = :status""")
+    List<GatheringUser> findApplicantsInGatheringByHost(Long gatheringId, Long hostId, GatheringUserStatus status);
 
     Optional<GatheringUser> findByUserAndGathering(User user, Gathering gathering);
+
+    @Query("""
+            SELECT m
+            FROM GatheringUser m
+            WHERE m.id = :gatheringUserId AND m.gathering.host.id = :userId""")
+    Optional<GatheringUser> findGatheringUserByHost(Long gatheringUserId, Long userId);
 }

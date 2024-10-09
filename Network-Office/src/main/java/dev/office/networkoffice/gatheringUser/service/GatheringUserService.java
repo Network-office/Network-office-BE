@@ -46,16 +46,9 @@ public class GatheringUserService {
      * 호스트가 볼 수 있는 모임 신청자들 목록
      */
     @Transactional(readOnly = true)
-    public ApplicantUserDto readApplicantsByGathering(Long hostId, Long gatheringId) {
-        // TODO: 메서드 명 변경
-        Gathering gathering = verifyHostAndFindGathering(hostId, gatheringId);
-        List<GatheringUser> users = gatheringUserRepository.findAllByGatheringAndGatheringUserStatus(gathering, GatheringUserStatus.APPLY_USER);
-        return new ApplicantUserDto(users);
-    }
-
-    private Gathering verifyHostAndFindGathering(Long hostId, Long gatheringId) {
-        return gatheringRepository.findByHostIdAndId(hostId, gatheringId)
-                .orElseThrow(() -> new IllegalArgumentException("호스트가 아니거나 모임을 찾을 수 없습니다."));
+    public ApplicantUserDto getApplicantsByHost(Long hostId, Long gatheringId) {
+        List<GatheringUser> applicants = gatheringUserRepository.findApplicantsInGatheringByHost(gatheringId, hostId, GatheringUserStatus.APPLY_USER);
+        return new ApplicantUserDto(applicants);
     }
 
     /**
@@ -63,8 +56,7 @@ public class GatheringUserService {
      */
     @Transactional
     public void denyApplicants(Long hostId, DenyUserDto denyUserDto) {
-        // TODO: 호스트 검증
-        GatheringUser gatheringUser = getGatheringUserById(denyUserDto.applicantId());
+        GatheringUser gatheringUser = getGatheringUserByHost(denyUserDto.applicantId(), hostId);
         gatheringUser.denyApplicants(denyUserDto.reason());
     }
 
@@ -73,8 +65,7 @@ public class GatheringUserService {
      */
     @Transactional
     public void deportsUser(Long hostId, DenyUserDto denyUserDto) {
-        // TODO: 호스트 검증
-        GatheringUser gatheringUser = getGatheringUserById(denyUserDto.applicantId());
+        GatheringUser gatheringUser = getGatheringUserByHost(denyUserDto.applicantId(), hostId);
         gatheringUser.deportApplicants(denyUserDto.reason());
     }
 
@@ -83,15 +74,13 @@ public class GatheringUserService {
      */
     @Transactional
     public void approvedApplicants(Long hostId, Long gatheringUserId) {
-        // TODO: 호스트 검증
-        GatheringUser gatheringUser = getGatheringUserById(gatheringUserId);
+        GatheringUser gatheringUser = getGatheringUserByHost(gatheringUserId, hostId);
         gatheringUser.confirmApplicants();
     }
 
     @Transactional
     public void blockedUserInGathering(Long hostId, DenyUserDto denyUserDto) {
-        // TODO: 호스트 검증
-        GatheringUser gatheringUser = getGatheringUserById(denyUserDto.applicantId());
+        GatheringUser gatheringUser = getGatheringUserByHost(denyUserDto.applicantId(), hostId);
         gatheringUser.blockApplicants(denyUserDto.reason());
     }
 
@@ -105,18 +94,21 @@ public class GatheringUserService {
                 .orElseThrow(() -> new IllegalArgumentException("모임을 찾을 수 없습니다."));
     }
 
-    private GatheringUser getGatheringUserById(Long gatheringUserId) {
-        return gatheringUserRepository.findById(gatheringUserId)
+    private GatheringUser getGatheringUserByHost(Long gatheringUserId, Long userId) {
+        return gatheringUserRepository.findGatheringUserByHost(gatheringUserId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("신청 이력을 찾을 수 없습니다."));
     }
 
     private void validateUserApplicationEligibility(User user, Gathering gathering) {
+        if (gathering.isHost(user)) {
+            throw new IllegalStateException("이미 호스트입니다.");
+        }
         GatheringUser gatheringUser = findGatheringUser(user, gathering);
         if (gatheringUser == null) {
             return;
         }
 
-        if (gatheringUser.canReapply()) {
+        if (!gatheringUser.isEligibleForReapplication()) {
             throw new IllegalArgumentException("다시 신청할 수 없는 상태입니다.");
         }
     }

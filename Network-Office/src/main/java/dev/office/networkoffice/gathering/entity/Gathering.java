@@ -115,4 +115,8 @@ public class Gathering {
         this.review = review;
         this.star = star;
     }
+
+    public boolean isHost(User user){
+        return host.equals(user);
+    }
 }

@@ -27,7 +27,7 @@ public class GatheringUserController implements GatheringUserApiDocs {
     public ApplicantUserDto getApplicantsInGatheringByHost(Principal principal,
                                                            @PathVariable(name = "gatheringId") Long gatheringId) {
         Long userId = getUserId(principal);
-        return gatheringUserService.readApplicantsByGathering(userId, gatheringId);
+        return gatheringUserService.getApplicantsByHost(userId, gatheringId);
     }
 
     @PatchMapping("deny")
