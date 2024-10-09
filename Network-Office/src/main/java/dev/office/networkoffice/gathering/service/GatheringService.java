@@ -50,19 +50,12 @@ public class GatheringService {
     // 모임 정보 시동구 조회
     @Transactional(readOnly = true)
     public GatheringListResponseDto getGatheringByPlace(String si, String dong, String gu) {
-        // TODO: 분리
-        List<GatheringResponseDto> gatherings = gatheringRepository.findDetailAddressBySiAndDongAndGu(si, dong, gu)
+        List<GatheringResponseDto> gatherings = gatheringRepository.findGatheringsByPlaceInfoAndStatus(si, dong, gu, GatheringStatus.IN_PROGRESS)
                 .stream()
-                .filter(this::isGatheringInProgress)
                 .map(GatheringResponseDto::from)
                 .toList();
 
         return GatheringListResponseDto.from(gatherings);
-    }
-
-    private boolean isGatheringInProgress(Gathering gathering) {
-        return gathering.getGatheringStatus()
-                .equals(GatheringStatus.IN_PROGRESS);
     }
 
     // 모임 수정
