@@ -75,13 +75,4 @@ public class GatheringUser {
         GatheringUserStatus status = gatheringUserStatus;
         return !(status == GatheringUserStatus.DEPORTATION_USER || status == GatheringUserStatus.BLOCKED_USER);
     }
-
-    public boolean confirmHostById(Long userId){
-        return getHost().getId()
-                .equals(userId);
-    }
-
-    private User getHost(){
-        return gathering.getHost();
-    }
 }
