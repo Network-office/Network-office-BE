@@ -14,7 +14,7 @@ public interface GatheringRepository extends JpaRepository<Gathering, Long> {
     @Query("""
             SELECT g
             FROM Gathering g
-            WHERE g.placeInfo.si = :si AND g.placeInfo.dong = :dong AND g.placeInfo.gu = :gu AND g.gatheringStatus = :status""")
+            WHERE g.placeInfo.si = :si AND g.placeInfo.dong = :dong AND g.placeInfo.gu = :gu AND g.gatheringStatus = :gatheringStatus""")
     List<Gathering> findGatheringsByPlaceInfoAndStatus(String si, String dong, String gu, GatheringStatus gatheringStatus);
 
     Optional<Gathering> findByHostIdAndId(Long hostId, Long gatheringId);

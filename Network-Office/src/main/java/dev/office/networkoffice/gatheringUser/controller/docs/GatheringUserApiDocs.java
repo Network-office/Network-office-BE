@@ -1,6 +1,6 @@
 package dev.office.networkoffice.gatheringUser.controller.docs;
 
-import dev.office.networkoffice.gatheringUser.controller.request.DenyUserDto;
+import dev.office.networkoffice.gatheringUser.controller.request.ChangeStatusDto;
 import dev.office.networkoffice.gatheringUser.controller.response.ApplicantUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +24,7 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    void applyGathering(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
+    void applyGathering(Principal principal, Long gatheringId);
 
     @Operation(summary = "모임 신청 목록 조회")
     @ApiResponses(value = {
@@ -37,9 +37,9 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    ApplicantUserDto getApplicantsInGatheringByHost(Principal principal, @PathVariable(name = "gatheringId") Long gatheringId);
+    ApplicantUserDto getApplicantsInGatheringByHost(Principal principal, Long gatheringId);
 
-    @Operation(summary = "모임 거절")
+    @Operation(summary = "모임 신청 상태 수정")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -50,44 +50,5 @@ public interface GatheringUserApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    void denyApplicants(Principal principal, @RequestBody DenyUserDto denyUserDto);
-
-    @Operation(summary = "모임 추방")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "요청이 정상적으로 처리되었을 때"
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "유효하지 않은 코드가 전달되었을 때"
-            )
-    })
-    void deportsUser(Principal principal, @RequestBody DenyUserDto denyUserDto);
-
-    @Operation(summary = "모임 신청 수락")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "요청이 정상적으로 처리되었을 때"
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "유효하지 않은 코드가 전달되었을 때"
-            )
-    })
-    void approvedApplicants(Principal principal, @PathVariable(name = "applicantId") Long applicantId);
-
-    @Operation(summary = "모임에 해당 유저 차단")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "요청이 정상적으로 처리되었을 때"
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "유효하지 않은 코드가 전달되었을 때"
-            )
-    })
-    void blockUserInGathering(Principal principal, @RequestBody DenyUserDto denyUserDto);
+    void patchApplicantStatusByHost(Principal principal, Long applicantId, ChangeStatusDto changeStatusDto);
 }

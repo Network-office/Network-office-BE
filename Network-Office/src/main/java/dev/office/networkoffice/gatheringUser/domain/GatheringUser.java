@@ -50,23 +50,33 @@ public class GatheringUser {
         this.gatheringUserStatus = GatheringUserStatus.APPLY_USER;
     }
 
-    public void denyApplicants(String reason) {
+    public void updateApplicantStatus(GatheringUserStatus status, String reason){
+        switch (status){
+            case DENIED_USER -> denyApplicants(reason);
+            case DEPORTATION_USER -> deportApplicants(reason);
+            case CONFIRMED_USER -> confirmApplicants();
+            case BLOCKED_USER -> blockApplicants(reason);
+            default -> throw new IllegalArgumentException("올바른 신청 상태가 아닙니다.");
+        }
+    }
+
+    private void denyApplicants(String reason) {
         Assert.hasText(reason, "거부사유는 비어 있을 수 없습니다.");
         this.gatheringUserStatus = GatheringUserStatus.DENIED_USER;
         this.deniedReason = reason;
     }
 
-    public void deportApplicants(String reason) {
+    private void deportApplicants(String reason) {
         Assert.hasText(reason, "추방사유는 비어 있을 수 없습니다.");
         this.gatheringUserStatus = GatheringUserStatus.DEPORTATION_USER;
         this.reasonForDeportation = ReasonForDeportation.valueOf(reason);
     }
 
-    public void confirmApplicants() {
+    private void confirmApplicants() {
         this.gatheringUserStatus = GatheringUserStatus.CONFIRMED_USER;
     }
 
-    public void blockApplicants(String reason) {
+    private void blockApplicants(String reason) {
         Assert.hasText(reason, "차단사유는 비어 있을 수 없습니다.");
         this.gatheringUserStatus = GatheringUserStatus.BLOCKED_USER;
     }

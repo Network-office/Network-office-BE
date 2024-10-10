@@ -14,10 +14,11 @@ import org.springframework.data.jpa.repository.Query;
 public interface GatheringUserRepository extends JpaRepository<GatheringUser, Long> {
 
     @Query("""
-            SELECT m
+            SELECT distinct m
             FROM GatheringUser m
-            WHERE m.gathering.id = :gatheringId
-            AND m.gathering.host.id = :hostId
+            join fetch m.gathering k
+            WHERE k.id = :gatheringId
+            AND k.host.id = :hostId
             AND m.gatheringUserStatus = :status""")
     List<GatheringUser> findApplicantsInGatheringByHost(Long gatheringId, Long hostId, GatheringUserStatus status);
 

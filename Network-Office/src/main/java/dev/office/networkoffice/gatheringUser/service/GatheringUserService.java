@@ -1,6 +1,6 @@
 package dev.office.networkoffice.gatheringUser.service;
 
-import dev.office.networkoffice.gatheringUser.controller.request.DenyUserDto;
+import dev.office.networkoffice.gatheringUser.controller.request.ChangeStatusDto;
 import dev.office.networkoffice.gatheringUser.controller.response.ApplicantUserDto;
 import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
 import org.springframework.stereotype.Service;
@@ -51,37 +51,10 @@ public class GatheringUserService {
         return new ApplicantUserDto(applicants);
     }
 
-    /**
-     * 모임신청을 거절하면? 거절 사유를 작성하고 변경.
-     */
     @Transactional
-    public void denyApplicants(Long hostId, DenyUserDto denyUserDto) {
-        GatheringUser gatheringUser = getGatheringUserByHost(denyUserDto.applicantId(), hostId);
-        gatheringUser.denyApplicants(denyUserDto.reason());
-    }
-
-    /**
-     * 유저를 사유와 함께 추방합니다.
-     */
-    @Transactional
-    public void deportsUser(Long hostId, DenyUserDto denyUserDto) {
-        GatheringUser gatheringUser = getGatheringUserByHost(denyUserDto.applicantId(), hostId);
-        gatheringUser.deportApplicants(denyUserDto.reason());
-    }
-
-    /**
-     * 모임 신청을 수락하면? -> 모임 확정된 인원으로 추가.
-     */
-    @Transactional
-    public void approvedApplicants(Long hostId, Long gatheringUserId) {
-        GatheringUser gatheringUser = getGatheringUserByHost(gatheringUserId, hostId);
-        gatheringUser.confirmApplicants();
-    }
-
-    @Transactional
-    public void blockedUserInGathering(Long hostId, DenyUserDto denyUserDto) {
-        GatheringUser gatheringUser = getGatheringUserByHost(denyUserDto.applicantId(), hostId);
-        gatheringUser.blockApplicants(denyUserDto.reason());
+    public void patchApplicantStatus(Long hostId, Long applicantId, ChangeStatusDto changeStatusDto){
+        GatheringUser gatheringUser = getGatheringUserByHost(applicantId, hostId);
+        gatheringUser.updateApplicantStatus(changeStatusDto.status(), changeStatusDto.reason());
     }
 
     private User getUserById(Long userId) {

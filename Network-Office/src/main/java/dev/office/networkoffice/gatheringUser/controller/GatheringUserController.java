@@ -1,7 +1,7 @@
 package dev.office.networkoffice.gatheringUser.controller;
 
 import dev.office.networkoffice.gatheringUser.controller.docs.GatheringUserApiDocs;
-import dev.office.networkoffice.gatheringUser.controller.request.DenyUserDto;
+import dev.office.networkoffice.gatheringUser.controller.request.ChangeStatusDto;
 import dev.office.networkoffice.gatheringUser.controller.response.ApplicantUserDto;
 import dev.office.networkoffice.gatheringUser.service.GatheringUserService;
 import lombok.RequiredArgsConstructor;
@@ -30,32 +30,12 @@ public class GatheringUserController implements GatheringUserApiDocs {
         return gatheringUserService.getApplicantsByHost(userId, gatheringId);
     }
 
-    @PatchMapping("deny")
-    public void denyApplicants(Principal principal,
-                               @RequestBody DenyUserDto denyUserDto) {
+    @PatchMapping("{applicantId}/status")
+    public void patchApplicantStatusByHost(Principal principal,
+                               @PathVariable(name = "applicantId") Long applicantId,
+                               @RequestBody ChangeStatusDto changeStatusDto) {
         Long userId = getUserId(principal);
-        gatheringUserService.denyApplicants(userId, denyUserDto);
-    }
-
-    @PatchMapping("deports")
-    public void deportsUser(Principal principal,
-                            @RequestBody DenyUserDto denyUserDto) {
-        Long userId = getUserId(principal);
-        gatheringUserService.deportsUser(userId, denyUserDto);
-    }
-
-    @PatchMapping("accept")
-    public void approvedApplicants(Principal principal,
-                                   @PathVariable(name = "applicantId") Long applicantId) {
-        Long userId = getUserId(principal);
-        gatheringUserService.approvedApplicants(userId, applicantId);
-    }
-
-    @PatchMapping("block")
-    public void blockUserInGathering(Principal principal,
-                                     @RequestBody DenyUserDto denyUserDto) {
-        Long userId = getUserId(principal);
-        gatheringUserService.blockedUserInGathering(userId, denyUserDto);
+        gatheringUserService.patchApplicantStatus(userId, applicantId, changeStatusDto);
     }
 
     private Long getUserId(Principal principal) {
