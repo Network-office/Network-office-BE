@@ -75,8 +75,8 @@ public class GatheringService {
     }
 
     @Transactional
-    public GatheringClosedResponse successGatheringByHost(Long hostId, GatheringSuccessDto successDto) {
-        Gathering gathering = verifyHostAndFindGathering(hostId, successDto.gatheringId());
+    public GatheringClosedResponse successGatheringByHost(Long hostId, Long gatheringId, GatheringSuccessDto successDto) {
+        Gathering gathering = verifyHostAndFindGathering(hostId, gatheringId);
         gathering.changeStatusToSuccessFul(successDto.review(), successDto.star());
 
         return GatheringClosedResponse.from(gathering.getGatheringStatus().name());
@@ -86,8 +86,8 @@ public class GatheringService {
      * 모임 파토. 호스트만 지울 수 있고, 지우기 전에 사유를 기록해야됨.
      */
     @Transactional
-    public GatheringClosedResponse cancelGatheringByHost(Long hostId, GatheringCancelDto cancelDto) {
-        Gathering gathering = verifyHostAndFindGathering(hostId, cancelDto.gatheringId());
+    public GatheringClosedResponse cancelGatheringByHost(Long hostId, Long gatheringId, GatheringCancelDto cancelDto) {
+        Gathering gathering = verifyHostAndFindGathering(hostId, gatheringId);
         gathering.changeStatusToCancel(cancelDto.reason());
 
         return GatheringClosedResponse.from(gathering.getGatheringStatus().name());

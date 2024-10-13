@@ -68,7 +68,9 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringClosedResponse cancelGatheringByHost(Principal principal, GatheringCancelDto cancelDto);
+    GatheringClosedResponse cancelGatheringByHost(Principal principal,
+                                                  Long gatheringId,
+                                                  GatheringCancelDto cancelDto);
 
     @Operation(summary = "모임 성공적 종료")
     @ApiResponses(value = {
@@ -81,5 +83,7 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringClosedResponse successGatheringByHost(Principal principal, GatheringSuccessDto successDto);
+    GatheringClosedResponse successGatheringByHost(Principal principal,
+                                                   Long gatheringId,
+                                                   GatheringSuccessDto successDto);
 }
