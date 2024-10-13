@@ -103,17 +103,32 @@ public class Gathering {
     }
 
     public void changeStatusToCancel(ReasonForCanceled reasonForCanceled) {
+        checkStatusInProgress();
         Assert.notNull(reasonForCanceled, "취소 사유는 null이 될 수 없습니다.");
         this.gatheringStatus = GatheringStatus.CANCELED;
         this.reasonForCanceled = reasonForCanceled;
     }
 
     public void changeStatusToSuccessFul(String review, Integer star) {
+        checkStatusInProgress();
         Assert.hasText(review, "review는 비어있을 수 없습니다.");
         Assert.notNull(star, "별점을 남겨주세요.");
+        checkStarRange(star);
         this.gatheringStatus = GatheringStatus.SUCCESSFUL;
         this.review = review;
         this.star = star;
+    }
+
+    private static void checkStarRange(Integer star) {
+        if (star < 1 || star > 5) {
+            throw new IllegalArgumentException("별점은 1~5 사이여야 합니다.");
+        }
+    }
+
+    private void checkStatusInProgress() {
+        if (gatheringStatus != GatheringStatus.IN_PROGRESS) {
+            throw new IllegalStateException("진행중인 모임만 성공처리할 수 있습니다.");
+        }
     }
 
     public boolean isHost(User user){
