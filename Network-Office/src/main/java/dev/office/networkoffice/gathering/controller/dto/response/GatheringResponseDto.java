@@ -7,6 +7,7 @@ import lombok.Builder;
 
 @Builder
 public record GatheringResponseDto(
+        Long id,
         String title,
         String category,
         String description,
@@ -23,6 +24,7 @@ public record GatheringResponseDto(
 ) {
     public static GatheringResponseDto from(Gathering gathering) {
         return GatheringResponseDto.builder()
+                .id(gathering.getId())
                 .title(gathering.getTitle())
                 .category(String.valueOf(gathering.getCategory()))
                 .description(gathering.getDescription())

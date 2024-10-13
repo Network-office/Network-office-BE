@@ -1,4 +1,4 @@
-package dev.office.networkoffice.gatheringUser.controller.response;
+package dev.office.networkoffice.gatheringUser.controller.dto.response;
 
 import dev.office.networkoffice.gatheringUser.domain.GatheringUser;
 

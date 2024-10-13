@@ -1,7 +1,7 @@
 package dev.office.networkoffice.gatheringUser.service;
 
-import dev.office.networkoffice.gatheringUser.controller.request.ChangeStatusDto;
-import dev.office.networkoffice.gatheringUser.controller.response.ApplicantUserDto;
+import dev.office.networkoffice.gatheringUser.controller.dto.request.ChangeStatusDto;
+import dev.office.networkoffice.gatheringUser.controller.dto.response.ApplicantUserDto;
 import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package dev.office.networkoffice.gatheringUser.controller.request;
+package dev.office.networkoffice.gatheringUser.controller.dto.request;
 
 import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
 

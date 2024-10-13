@@ -50,8 +50,8 @@ public class GatheringUser {
         this.gatheringUserStatus = GatheringUserStatus.APPLY_USER;
     }
 
-    public void updateApplicantStatus(GatheringUserStatus status, String reason){
-        switch (status){
+    public void updateApplicantStatus(GatheringUserStatus status, String reason) {
+        switch (status) {
             case DENIED_USER -> denyApplicants(reason);
             case DEPORTATION_USER -> deportApplicants(reason);
             case CONFIRMED_USER -> confirmApplicants();

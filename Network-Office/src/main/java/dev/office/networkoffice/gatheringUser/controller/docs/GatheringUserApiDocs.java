@@ -1,13 +1,11 @@
 package dev.office.networkoffice.gatheringUser.controller.docs;
 
-import dev.office.networkoffice.gatheringUser.controller.request.ChangeStatusDto;
-import dev.office.networkoffice.gatheringUser.controller.response.ApplicantUserDto;
+import dev.office.networkoffice.gatheringUser.controller.dto.request.ChangeStatusDto;
+import dev.office.networkoffice.gatheringUser.controller.dto.response.ApplicantUserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
 
