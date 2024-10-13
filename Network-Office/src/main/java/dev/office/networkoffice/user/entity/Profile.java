@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
 
-    private static final String INIT_EMPTY_VALUE = "";
+    private static final String INIT_EMPTY_VALUE = null;
 
     @Column(name = "display_name", unique = true)
     private String displayName;
@@ -36,6 +36,9 @@ public class Profile {
 
     protected void updateDisplayName(String displayName) {
         Assert.hasText(displayName, "닉네임은 필수입니다.");
+        if (displayName.length() < 2 || displayName.length() > 20) {
+            throw new IllegalArgumentException("닉네임은 2자 이상 20자 이하여야 합니다.");
+        }
         this.displayName = displayName;
     }
 
