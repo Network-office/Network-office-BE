@@ -88,4 +88,96 @@ class UserTest {
         // when, then
         assertThrows(IllegalArgumentException.class, () -> user.verifyPhoneNumber("01012345678"));
     }
+
+    @Test
+    @DisplayName("DisplayName을 수정하면 사용자의 닉네임이 변경되어야 한다.")
+    void shouldChangeDisplayName() {
+        // given
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
+        String testNickname = "testNickname";
+
+        // when
+        user.updateDisplayName(testNickname);
+
+        // then
+        assertEquals(testNickname, user.getProfile().getDisplayName());
+    }
+
+    @Test
+    @DisplayName("수정할 DisplayName이 없으면 예외가 발생해야 한다.")
+    void shouldThrowExceptionWhenUpdateDisplayNameIsEmptyOrNull() {
+        // given
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () -> user.updateDisplayName(""));
+        assertThrows(IllegalArgumentException.class, () -> user.updateDisplayName(null));
+    }
+
+    @Test
+    @DisplayName("수정할 DisplayName이 2자 미만이거나 20자를 초과하면 예외가 발생해야 한다.")
+    void shouldThrowExceptionWhenUpdateDisplayNameIsLessThanTwoOrMoreThanTwenty() {
+        // given
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () -> user.updateDisplayName("a"));
+        assertThrows(IllegalArgumentException.class, () -> user.updateDisplayName("123456789012345678901"));
+    }
+
+    @Test
+    @DisplayName("프로필 이미지 URL을 수정하면 사용자의 프로필 이미지 URL이 변경되어야 한다.")
+    void shouldChangeProfileImageUrl() {
+        // given
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        User user = User.createNewUserWithOAuth(oAuthInfo, "http://test1.com");
+        String testProfileImageUrl = "http://test2.com";
+
+        // when
+        user.updateProfileImageUrl(testProfileImageUrl);
+
+        // then
+        assertEquals(testProfileImageUrl, user.getProfile().getImageUrl());
+    }
+
+    @Test
+    @DisplayName("수정할 프로필 이미지 URL이 없으면 예외가 발생해야 한다.")
+    void shouldThrowExceptionWhenUpdateProfileImageUrlIsEmptyOrNull() {
+        // given
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () -> user.updateProfileImageUrl(""));
+        assertThrows(IllegalArgumentException.class, () -> user.updateProfileImageUrl(null));
+    }
+
+    @Test
+    @DisplayName("자기소개를 수정하면 사용자의 자기소개가 변경되어야 한다.")
+    void shouldChangeDescription() {
+        // given
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
+        String testDescription = "testDescription";
+
+        // when
+        user.updateDescription(testDescription);
+
+        // then
+        assertEquals(testDescription, user.getProfile().getDescription());
+    }
+
+    @Test
+    @DisplayName("수정할 자기소개가 null이면 예외가 발생해야 한다.")
+    void shouldThrowExceptionWhenUpdateDescriptionIsEmptyOrNull() {
+        // given
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
+
+        // when, then
+        assertThrows(IllegalArgumentException.class, () -> user.updateDescription(null));
+    }
 }
