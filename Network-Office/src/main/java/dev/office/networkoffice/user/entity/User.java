@@ -27,8 +27,8 @@ public class User extends BaseTimeEntity {
     @Embedded
     private OAuthInfo oAuthInfo;
 
-    @Column(name = "profile_image_url")
-    private String profileImageUrl;
+    @Embedded
+    private Profile profile;
 
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
@@ -36,16 +36,16 @@ public class User extends BaseTimeEntity {
     @Column(name = "is_verified")
     private boolean isVerified;
 
-    private User(OAuthInfo oAuthInfo, String profileImageUrl) {
+    private User(OAuthInfo oAuthInfo, Profile profile) {
         this.oAuthInfo = oAuthInfo;
-        this.profileImageUrl = profileImageUrl;
+        this.profile = profile;
         this.isVerified = false;
     }
 
     public static User createNewUserWithOAuth(OAuthInfo oAuthInfo, String profileImageUrl) {
         Assert.notNull(oAuthInfo, "OAuth 정보는 필수입니다.");
-        Assert.hasText(profileImageUrl, "프로필 이미지 URL은 필수입니다.");
-        return new User(oAuthInfo, profileImageUrl);
+        Profile profile = Profile.createNewProfile(profileImageUrl);
+        return new User(oAuthInfo, profile);
     }
 
     public void verifyPhoneNumber(String phoneNumber) {
@@ -53,5 +53,17 @@ public class User extends BaseTimeEntity {
         Assert.isTrue(!isVerified, "이미 인증된 사용자입니다.");
         this.phoneNumber = phoneNumber;
         this.isVerified = true;
+    }
+
+    public void updateDisplayName(String displayName) {
+        profile.updateDisplayName(displayName);
+    }
+
+    public void updateProfileImageUrl(String profileImageUrl) {
+        profile.updateProfileImageUrl(profileImageUrl);
+    }
+
+    public void updateDescription(String description) {
+        profile.updateDescription(description);
     }
 }

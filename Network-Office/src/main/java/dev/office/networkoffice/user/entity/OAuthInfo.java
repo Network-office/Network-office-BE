@@ -20,6 +20,8 @@ public class OAuthInfo {
     @Column(name = "social_type")
     private SocialType socialType;
 
+    // 소셜 로그인을 통해 가입한 사용자의 소셜 계정 닉네임
+    // 서비스의 닉네임과 다릅니다.
     @Column(name = "nickname")
     private String nickname;
 
