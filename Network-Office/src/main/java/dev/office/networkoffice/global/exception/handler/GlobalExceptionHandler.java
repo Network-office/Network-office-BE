@@ -22,6 +22,16 @@ public class GlobalExceptionHandler {
                 .body(bodyData);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ExceptionResponse> handleIllegalStateException(IllegalStateException exception) {
+        ExceptionResponse bodyData = ExceptionResponse.of(exception.getMessage());
+        log.error("IllegalStateException: {}", exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(bodyData);
+    }
+
     @ExceptionHandler(ExternalServiceException.class)
     public ResponseEntity<ExceptionResponse> handleExternalServiceException(ExternalServiceException exception) {
         ExceptionResponse bodyData = ExceptionResponse.of(exception.getMessage());
