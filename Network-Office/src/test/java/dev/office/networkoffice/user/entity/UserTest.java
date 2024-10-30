@@ -11,7 +11,7 @@ class UserTest {
 
     @Test
     @DisplayName("OAuth2로 가입한 사용자는 프로필 이미지 URL이 없으면 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenProfileImageUrlIsEmptyOrNull() {
+    void shouldThrowException_WhenProfileImageUrlIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
 
@@ -22,14 +22,14 @@ class UserTest {
 
     @Test
     @DisplayName("OAuth2로 가입한 사용자는 OAuth 정보가 없으면 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenOAuthInfoIsNull() {
+    void shouldThrowException_WhenOAuthInfoIsNull() {
         // when, then
         assertThrows(IllegalArgumentException.class, () -> User.createNewUserWithOAuth(null, "test"));
     }
 
     @Test
     @DisplayName("처음 생성된 사용자의 인증 상태는 false여야 한다.")
-    void shouldReturnFalseWhenUserIsNotVerified() {
+    void shouldReturnFalse_WhenUserIsNotVerified() {
         // given
         User user = new User();
 
@@ -42,7 +42,7 @@ class UserTest {
 
     @Test
     @DisplayName("휴대폰 번호를 인증하면 사용자의 인증 상태가 true로 변경되어야 한다.")
-    void shouldReturnTrueWhenUserIsVerified() {
+    void shouldReturnTrue_WhenUserIsVerified() {
         // given
         User user = new User();
 
@@ -55,7 +55,7 @@ class UserTest {
 
     @Test
     @DisplayName("휴대폰 번호를 인증하면 사용자의 휴대폰 번호가 변경되어야 한다.")
-    void shouldChangePhoneNumberWhenUserIsVerified() {
+    void shouldChangePhoneNumber_WhenUserIsVerified() {
         // given
         User user = new User();
         String testPhoneNumber = "01012345678";
@@ -69,7 +69,7 @@ class UserTest {
 
     @Test
     @DisplayName("휴대폰 번호 없이 휴대폰 인증을 시도하면 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenPhoneNumberIsEmptyOrNull() {
+    void shouldThrowException_WhenPhoneNumberIsEmptyOrNull() {
         // given
         User user = new User();
 
@@ -80,7 +80,7 @@ class UserTest {
 
     @Test
     @DisplayName("이미 인증된 사용자를 다시 인증하려고 할 때 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenUserIsAlreadyVerified() {
+    void shouldThrowException_WhenUserIsAlreadyVerified() {
         // given
         User user = new User();
         user.verifyPhoneNumber("01012345678");
@@ -106,7 +106,7 @@ class UserTest {
 
     @Test
     @DisplayName("수정할 DisplayName이 없으면 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenUpdateDisplayNameIsEmptyOrNull() {
+    void shouldThrowException_WhenUpdateDisplayNameIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
         User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
@@ -118,7 +118,7 @@ class UserTest {
 
     @Test
     @DisplayName("수정할 DisplayName이 2자 미만이거나 20자를 초과하면 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenUpdateDisplayNameIsLessThanTwoOrMoreThanTwenty() {
+    void shouldThrowException_WhenUpdateDisplayNameIsLessThanTwoOrMoreThanTwenty() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
         User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
@@ -145,7 +145,7 @@ class UserTest {
 
     @Test
     @DisplayName("수정할 프로필 이미지 URL이 없으면 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenUpdateProfileImageUrlIsEmptyOrNull() {
+    void shouldThrowException_WhenUpdateProfileImageUrlIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
         User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
@@ -172,7 +172,7 @@ class UserTest {
 
     @Test
     @DisplayName("수정할 자기소개가 null이면 예외가 발생해야 한다.")
-    void shouldThrowExceptionWhenUpdateDescriptionIsEmptyOrNull() {
+    void shouldThrowException_WhenUpdateDescriptionIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
         User user = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
