@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
@@ -50,7 +51,15 @@ public class Feed extends BaseTimeEntity {
     }
 
     public static Feed writeNewFeed(String title, String contents, String category, User author) {
+        validateArguments(title, contents, category, author);
         return new Feed(title, contents, category, author);
+    }
+
+    private static void validateArguments(String title, String contents, String category, User author) {
+        Assert.notNull(title, "피드에 제목은 필수입니다.");
+        Assert.notNull(contents, "피드의 내용은 필수입니다.");
+        Assert.notNull(category, "피드의 카테고리는 필수입니다.");
+        Assert.notNull(author, "피드의 작성자는 필수입니다.");
     }
 
     public void increaseView() {
