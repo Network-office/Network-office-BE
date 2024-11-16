@@ -26,9 +26,6 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "comment_id")
     private Long id;
 
-    @Column(name = "text", nullable = false, columnDefinition = "TEXT")
-    private String text;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_id", nullable = false)
     private Feed feed;
@@ -37,13 +34,16 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    private Comment(String text, Feed feed, User author) {
-        this.text = text;
+    @Column(name = "text", nullable = false, columnDefinition = "TEXT")
+    private String text;
+
+    private Comment(Feed feed, User author, String text) {
         this.feed = feed;
         this.author = author;
+        this.text = text;
     }
 
-    public static Comment writeNewComment(String text, Feed feed, User author) {
-        return new Comment(text, feed, author);
+    public static Comment writeNewComment(Feed feed, User author, String text) {
+        return new Comment(feed, author, text);
     }
 }
