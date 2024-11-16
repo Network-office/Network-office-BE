@@ -39,7 +39,7 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public Slice<FeedInfo> getFeeds(Pageable pageable) {
-        return feedRepository.findAll(pageable)
+        return feedRepository.findAllByOrderByCreatedTimeDesc(pageable)
                 .map(this::mapToFeedInfo);
     }
 
