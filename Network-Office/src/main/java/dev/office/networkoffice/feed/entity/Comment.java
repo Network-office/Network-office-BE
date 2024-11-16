@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
@@ -44,6 +45,13 @@ public class Comment extends BaseTimeEntity {
     }
 
     public static Comment writeNewComment(Feed feed, User author, String text) {
+        validateArguments(feed, author, text);
         return new Comment(feed, author, text);
+    }
+
+    private static void validateArguments(Feed feed, User author, String text) {
+        Assert.notNull(feed, "댓글을 작성할 피드 정보는 필수입니다.");
+        Assert.notNull(author, "피드의 작성자는 필수입니다.");
+        Assert.hasText(text, "작성할 댓글 내용은 필수입니다.");
     }
 }
