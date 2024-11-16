@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
@@ -39,6 +40,12 @@ public class Likes {
     }
 
     public static Likes createLikes(User user, Feed feed) {
+        validateArguments(user, feed);
         return new Likes(user, feed);
+    }
+
+    private static void validateArguments(User user, Feed feed) {
+        Assert.notNull(user, "좋아요를 누를 사용자 정보는 필수입니다.");
+        Assert.notNull(feed, "좋아요를 누를 피드 정보는 필수입니다.");
     }
 }
