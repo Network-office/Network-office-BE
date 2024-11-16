@@ -5,6 +5,7 @@ import dev.office.networkoffice.feed.dto.response.FeedDetails;
 import dev.office.networkoffice.feed.dto.response.FeedInfo;
 import dev.office.networkoffice.feed.dto.request.FeedWrite;
 import dev.office.networkoffice.feed.service.FeedService;
+import dev.office.networkoffice.feed.service.LikesService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FeedController implements FeedApiDocs {
 
     private final FeedService feedService;
+    private final LikesService likesService;
 
     @PostMapping
     public void writeFeed(Principal principal, @RequestBody FeedWrite request) {
@@ -38,5 +40,17 @@ public class FeedController implements FeedApiDocs {
     public FeedDetails viewFeedDetail(Principal principal, @PathVariable Long feedId) {
         Long userId = Long.parseLong(principal.getName());
         return feedService.getFeed(userId, feedId);
+    }
+
+    @PostMapping("{feedId}/likes")
+    public void feedLikes(Principal principal, @PathVariable Long feedId) {
+        Long userId = Long.parseLong(principal.getName());
+        likesService.likeFeed(userId, feedId);
+    }
+
+    @PostMapping("{feedId}/unlikes")
+    public void feedUnlikes(Principal principal, @PathVariable Long feedId) {
+        Long userId = Long.parseLong(principal.getName());
+        likesService.unlikeFeed(userId, feedId);
     }
 }

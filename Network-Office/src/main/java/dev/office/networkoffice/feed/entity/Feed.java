@@ -35,9 +35,6 @@ public class Feed extends BaseTimeEntity {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "likes", nullable = false)
-    private Long like = 0L;
-
     @Column(name = "views", nullable = false)
     private Long view = 0L;
 

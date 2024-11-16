@@ -8,6 +8,7 @@ import dev.office.networkoffice.feed.entity.Comment;
 import dev.office.networkoffice.feed.entity.Feed;
 import dev.office.networkoffice.feed.repository.CommentRepository;
 import dev.office.networkoffice.feed.repository.FeedRepository;
+import dev.office.networkoffice.feed.repository.LikesRepository;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedService {
 
     private final FeedRepository feedRepository;
+    private final LikesRepository likesRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
@@ -32,15 +34,25 @@ public class FeedService {
         feedRepository.save(newFeed);
     }
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-    }
-
     @Transactional(readOnly = true)
     public Slice<FeedInfo> getFeeds(Pageable pageable) {
         return feedRepository.findAllByOrderByCreatedTimeDesc(pageable)
                 .map(this::mapToFeedInfo);
+    }
+
+    @Transactional
+    public FeedDetails getFeed(Long userId, Long feedId) {
+        // TODO: 조회수 기능 구현
+        //  User viewer = findUserById(userId);
+        Feed feed = findFeedById(feedId);
+        feed.increaseView();
+        List<CommentDetails> comments = getCommentDetails(feedId);
+        return mapToFeedDetails(feed, comments);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 
     private FeedInfo mapToFeedInfo(Feed feed) {
@@ -52,19 +64,9 @@ public class FeedService {
                 feed.getAuthor().getId(),
                 feed.getAuthor().getProfile().getDisplayName(),
                 feed.getView(),
-                feed.getLike(),
+                getLikes(feed.getId()),
                 feed.getCreatedTime()
         );
-    }
-
-    @Transactional
-    public FeedDetails getFeed(Long userId, Long feedId) {
-        // TODO: 조회수 기능 구현
-        //  User viewer = findUserById(userId);
-        Feed feed = findFeedById(feedId);
-        feed.increaseView();
-        List<CommentDetails> comments = getCommentDetails(feedId);
-        return mapToFeedDetails(feed, comments);
     }
 
     private Feed findFeedById(Long feedId) {
@@ -97,9 +99,13 @@ public class FeedService {
                 feed.getAuthor().getId(),
                 feed.getAuthor().getProfile().getDisplayName(),
                 feed.getView(),
-                feed.getLike(),
+                getLikes(feed.getId()),
                 feed.getCreatedTime(),
                 comments
         );
+    }
+
+    private Long getLikes(Long feedId) {
+        return likesRepository.countByFeedId(feedId);
     }
 }

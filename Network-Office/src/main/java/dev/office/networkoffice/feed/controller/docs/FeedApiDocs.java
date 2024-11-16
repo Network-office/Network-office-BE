@@ -40,4 +40,22 @@ public interface FeedApiDocs {
             )
     })
     FeedDetails viewFeedDetail(Principal principal, Long feedId);
+
+    @Operation(summary = "특정 피드 좋아요 누르기")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청이 정상적으로 처리되었을 때"
+            )
+    })
+    void feedLikes(Principal principal, Long feedId);
+
+    @Operation(summary = "특정 피드 좋아요 취소하기")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청이 정상적으로 처리되었을 때"
+            )
+    })
+    void feedUnlikes(Principal principal, Long feedId);
 }
