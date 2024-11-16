@@ -70,7 +70,7 @@ class FeedTest {
         assertThrows(IllegalArgumentException.class, () -> Feed.writeNewFeed(title, contents, category, testUser));
     }
 
-    private static User createTestUser() {
+    private User createTestUser() {
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
         return User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
     }
