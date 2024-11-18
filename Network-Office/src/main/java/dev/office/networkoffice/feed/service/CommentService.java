@@ -51,13 +51,8 @@ public class CommentService {
     }
 
     private void checkAuthor(Comment targetComment, User author) {
-        if (!isAuthor(targetComment, author)) {
-            throw new IllegalArgumentException("댓글 작성자가 아닌 경우 댓글을 삭제할 수 없습니다.");
+        if (!targetComment.isCreatedBy(author)) {
+            throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다.");
         }
-    }
-
-    private boolean isAuthor(Comment targetComment, User author) {
-        return targetComment.getAuthor()
-                .equals(author);
     }
 }

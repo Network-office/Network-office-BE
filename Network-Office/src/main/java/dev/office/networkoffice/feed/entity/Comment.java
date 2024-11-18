@@ -54,4 +54,8 @@ public class Comment extends BaseTimeEntity {
         Assert.notNull(author, "피드의 작성자는 필수입니다.");
         Assert.hasText(text, "작성할 댓글 내용은 필수입니다.");
     }
+
+    public boolean isCreatedBy(User targetAuthor) {
+        return author.equals(targetAuthor);
+    }
 }
