@@ -30,7 +30,7 @@ class LikesTest {
         assertEquals(testFeed, likes.getFeed(), "Likes의 Feed 정보가 올바르지 않습니다.");
     }
 
-    @DisplayName("User가 null인 경우 Likes 생성 시 예외 발생")
+    @DisplayName("파라미터가 null인 경우 Likes 생성 시 예외가 발생한다.")
     @ParameterizedTest
     @CsvSource({
             "null, validFeed",

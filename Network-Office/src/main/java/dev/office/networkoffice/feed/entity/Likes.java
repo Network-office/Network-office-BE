@@ -1,12 +1,14 @@
 package dev.office.networkoffice.feed.entity;
 
 import dev.office.networkoffice.user.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -17,7 +19,9 @@ import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Table(name = "likes")
+@Table(name = "likes", indexes = {
+        @Index(name = "idx_likes_user_feed", columnList = "user_id,feed_id", unique = true)
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Likes {
 
@@ -30,8 +34,8 @@ public class Likes {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feed_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "feed_id", nullable = false)
     private Feed feed;
 
     private Likes(User user, Feed feed) {
