@@ -4,9 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 @Getter
 @Embeddable
@@ -28,6 +30,8 @@ public class OAuthInfo {
     private OAuthInfo(String socialId,
                       SocialType socialType,
                       String nickname) {
+        Assert.hasText(socialId, "Provider ID는 필수입니다.");
+        Assert.notNull(socialType, "Provider Type은 필수입니다.");
         this.socialId = socialId;
         this.socialType = socialType;
         this.nickname = nickname;
@@ -35,5 +39,23 @@ public class OAuthInfo {
 
     public static OAuthInfo createForKakao(String socialId, String nickname) {
         return new OAuthInfo(socialId, SocialType.KAKAO, nickname);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OAuthInfo oAuthInfo = (OAuthInfo) o;
+        return Objects.equals(socialId, oAuthInfo.socialId) &&
+                socialType == oAuthInfo.socialType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socialId, socialType);
     }
 }

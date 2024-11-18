@@ -70,15 +70,22 @@ public class User extends BaseTimeEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id);
+
+        if (id != null && user.id != null) {
+            return Objects.equals(id, user.id);
+        }
+
+        return Objects.equals(oAuthInfo, user.oAuthInfo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        if (id != null) {
+            return Objects.hash(id);
+        }
+        return Objects.hash(oAuthInfo);
     }
 }
