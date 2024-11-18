@@ -55,19 +55,27 @@ class FeedTest {
         );
     }
 
-    @DisplayName("제목, 카테고리 또는 내용이 비어있는 경우 예외가 발생한다.")
+    @DisplayName("제목, 카테고리 또는 내용이 비어있거나 null인 경우 예외가 발생한다.")
     @ParameterizedTest
     @CsvSource({
-            ", category, contents",
-            "title, , contents",
-            "title, category,"
+            "'', category, contents",
+            "title, '', contents",
+            "title, category, ''",
+            "null, category, contents",
+            "title, null, contents",
+            "title, category, null"
     })
-    void shouldThrowException_WhenFeedFieldsAreNull(String title, String category, String contents) {
+    void shouldThrowException_WhenFeedFieldsAreNull(String titleInput, String categoryInput, String contentsInput) {
         // given
         User testUser = createTestUser();
+        final String title = "null".equals(titleInput) ? null : titleInput;
+        final String category = "null".equals(categoryInput) ? null : categoryInput;
+        final String contents = "null".equals(contentsInput) ? null : contentsInput;
 
         // when, then
-        assertThrows(IllegalArgumentException.class, () -> Feed.writeNewFeed(title, contents, category, testUser));
+        assertThrows(IllegalArgumentException.class, () ->
+                Feed.writeNewFeed(title, contents, category, testUser)
+        );
     }
 
     private User createTestUser() {
