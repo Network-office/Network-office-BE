@@ -56,6 +56,7 @@ public class Comment extends BaseTimeEntity {
     }
 
     public boolean isCreatedBy(User targetAuthor) {
+        Assert.notNull(targetAuthor, "비교할 사용자 정보는 필수입니다.");
         return author.equals(targetAuthor);
     }
 }
