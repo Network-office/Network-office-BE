@@ -1,16 +1,18 @@
 package dev.office.networkoffice.user.entity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@SpringBootTest
+@DisplayName("User 엔티티 객체 테스트")
 class UserTest {
 
-    @Test
     @DisplayName("OAuth2로 가입한 사용자는 프로필 이미지 URL이 없으면 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenProfileImageUrlIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
@@ -20,15 +22,15 @@ class UserTest {
         assertThrows(IllegalArgumentException.class, () -> User.createNewUserWithOAuth(oAuthInfo, null));
     }
 
-    @Test
     @DisplayName("OAuth2로 가입한 사용자는 OAuth 정보가 없으면 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenOAuthInfoIsNull() {
         // when, then
         assertThrows(IllegalArgumentException.class, () -> User.createNewUserWithOAuth(null, "test"));
     }
 
-    @Test
     @DisplayName("처음 생성된 사용자의 인증 상태는 false여야 한다.")
+    @Test
     void shouldReturnFalse_WhenUserIsNotVerified() {
         // given
         User user = new User();
@@ -40,8 +42,8 @@ class UserTest {
         assertFalse(isVerified);
     }
 
-    @Test
     @DisplayName("휴대폰 번호를 인증하면 사용자의 인증 상태가 true로 변경되어야 한다.")
+    @Test
     void shouldReturnTrue_WhenUserIsVerified() {
         // given
         User user = new User();
@@ -53,8 +55,8 @@ class UserTest {
         assertTrue(user.isVerified());
     }
 
-    @Test
     @DisplayName("휴대폰 번호를 인증하면 사용자의 휴대폰 번호가 변경되어야 한다.")
+    @Test
     void shouldChangePhoneNumber_WhenUserIsVerified() {
         // given
         User user = new User();
@@ -67,8 +69,8 @@ class UserTest {
         assertEquals(testPhoneNumber, user.getPhoneNumber());
     }
 
-    @Test
     @DisplayName("휴대폰 번호 없이 휴대폰 인증을 시도하면 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenPhoneNumberIsEmptyOrNull() {
         // given
         User user = new User();
@@ -78,8 +80,8 @@ class UserTest {
         assertThrows(IllegalArgumentException.class, () -> user.verifyPhoneNumber(null));
     }
 
-    @Test
     @DisplayName("이미 인증된 사용자를 다시 인증하려고 할 때 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenUserIsAlreadyVerified() {
         // given
         User user = new User();
@@ -89,8 +91,8 @@ class UserTest {
         assertThrows(IllegalArgumentException.class, () -> user.verifyPhoneNumber("01012345678"));
     }
 
-    @Test
     @DisplayName("DisplayName을 수정하면 사용자의 닉네임이 변경되어야 한다.")
+    @Test
     void shouldChangeDisplayName() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
@@ -104,8 +106,8 @@ class UserTest {
         assertEquals(testNickname, user.getProfile().getDisplayName());
     }
 
-    @Test
     @DisplayName("수정할 DisplayName이 없으면 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenUpdateDisplayNameIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
@@ -116,8 +118,8 @@ class UserTest {
         assertThrows(IllegalArgumentException.class, () -> user.updateDisplayName(null));
     }
 
-    @Test
     @DisplayName("수정할 DisplayName이 2자 미만이거나 20자를 초과하면 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenUpdateDisplayNameIsLessThanTwoOrMoreThanTwenty() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
@@ -128,8 +130,8 @@ class UserTest {
         assertThrows(IllegalArgumentException.class, () -> user.updateDisplayName("123456789012345678901"));
     }
 
-    @Test
     @DisplayName("프로필 이미지 URL을 수정하면 사용자의 프로필 이미지 URL이 변경되어야 한다.")
+    @Test
     void shouldChangeProfileImageUrl() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
@@ -143,8 +145,8 @@ class UserTest {
         assertEquals(testProfileImageUrl, user.getProfile().getImageUrl());
     }
 
-    @Test
     @DisplayName("수정할 프로필 이미지 URL이 없으면 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenUpdateProfileImageUrlIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
@@ -155,8 +157,8 @@ class UserTest {
         assertThrows(IllegalArgumentException.class, () -> user.updateProfileImageUrl(null));
     }
 
-    @Test
     @DisplayName("자기소개를 수정하면 사용자의 자기소개가 변경되어야 한다.")
+    @Test
     void shouldChangeDescription() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
@@ -170,8 +172,8 @@ class UserTest {
         assertEquals(testDescription, user.getProfile().getDescription());
     }
 
-    @Test
     @DisplayName("수정할 자기소개가 null이면 예외가 발생해야 한다.")
+    @Test
     void shouldThrowException_WhenUpdateDescriptionIsEmptyOrNull() {
         // given
         OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
