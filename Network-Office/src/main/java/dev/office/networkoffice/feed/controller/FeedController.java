@@ -10,6 +10,8 @@ import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +34,8 @@ public class FeedController implements FeedApiDocs {
     }
 
     @GetMapping
-    public Slice<FeedInfo> viewFeeds(Pageable pageable) {
+    public Slice<FeedInfo> viewFeeds(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC)
+                                     Pageable pageable) {
         return feedService.getFeeds(pageable);
     }
 
