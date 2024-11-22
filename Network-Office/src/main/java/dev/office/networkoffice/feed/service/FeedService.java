@@ -42,12 +42,11 @@ public class FeedService {
 
     @Transactional
     public FeedDetails getFeed(Long userId, Long feedId) {
-        // TODO: 조회수 기능 구현
-        //  User viewer = findUserById(userId);
         Feed feed = findFeedById(feedId);
         feed.increaseView();
         List<CommentDetails> comments = getCommentDetails(feedId);
-        return mapToFeedDetails(feed, comments);
+        boolean isLiked = getLiked(userId, feedId);
+        return mapToFeedDetails(feed, comments, isLiked);
     }
 
     private User findUserById(Long userId) {
@@ -90,7 +89,7 @@ public class FeedService {
                 comment.getCreatedTime());
     }
 
-    private FeedDetails mapToFeedDetails(Feed feed, List<CommentDetails> comments) {
+    private FeedDetails mapToFeedDetails(Feed feed, List<CommentDetails> comments, boolean isLiked) {
         return new FeedDetails(
                 feed.getId(),
                 feed.getTitle(),
@@ -100,9 +99,21 @@ public class FeedService {
                 feed.getAuthor().getProfile().getDisplayName(),
                 feed.getView(),
                 getLikes(feed.getId()),
+                isLiked,
                 feed.getCreatedTime(),
                 comments
         );
+    }
+
+    private boolean getLiked(Long userId, Long feedId) {
+        if (userId == null) {
+            return false;
+        }
+        return isLiked(userId, feedId);
+    }
+
+    private boolean isLiked(Long userId, Long feedId) {
+        return likesRepository.existsByUserIdAndFeedId(userId, feedId);
     }
 
     private Long getLikes(Long feedId) {

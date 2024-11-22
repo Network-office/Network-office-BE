@@ -17,9 +17,9 @@ public record FeedInfo(
         @JsonProperty("author_display_name")
         String authorDisplayName,
         @JsonProperty("view")
-        Long view,
+        long view,
         @JsonProperty("like")
-        Long like,
+        long like,
         @JsonProperty("created_time")
         LocalDateTime createdTime
 ) {
