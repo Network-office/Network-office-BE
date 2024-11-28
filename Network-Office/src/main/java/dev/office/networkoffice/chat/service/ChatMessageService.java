@@ -50,7 +50,7 @@ public class ChatMessageService {
         ChatMessage chatMessage = createChatAnonymousMessageByRequest(request, gathering);
         gathering.createMessage(chatMessage);
         gatheringRepository.save(gathering);
-        return ChatMessageResponse.from(chatMessage);
+        return ChatMessageResponse.anonymousFrom(chatMessage);
     }
 
     private ChatMessage createChatAnonymousMessageByRequest(ChatMessageRequest request, Gathering gathering) {
