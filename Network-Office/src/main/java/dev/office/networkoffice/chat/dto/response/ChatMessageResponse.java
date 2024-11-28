@@ -20,6 +20,7 @@ public record ChatMessageResponse(
         return ChatMessageResponse.builder()
                 .id(chatMessage.getId())
                 .writer(chatMessage.getAuthor().getProfile().getDisplayName())
+                .content(chatMessage.getContent())
                 .createdTime(chatMessage.getCreatedTime())
                 .build();
     }
@@ -28,6 +29,7 @@ public record ChatMessageResponse(
         return ChatMessageResponse.builder()
                 .id(chatMessage.getId())
                 .writer(chatMessage.getWriter())
+                .content(chatMessage.getContent())
                 .createdTime(chatMessage.getCreatedTime())
                 .build();
     }
