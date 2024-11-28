@@ -3,6 +3,7 @@ package dev.office.networkoffice.gathering.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.office.networkoffice.chat.entity.ChatMessage;
 import dev.office.networkoffice.gathering.domain.Category;
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
 import dev.office.networkoffice.gathering.domain.ReasonForCanceled;
@@ -59,6 +60,9 @@ public class Gathering {
 
     @OneToMany(mappedBy = "gathering", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<GatheringUser> gatheringUserList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "gathering", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChatMessage> chatMessageList = new ArrayList<>();
 
     @Builder
     private Gathering(User host,
@@ -133,5 +137,9 @@ public class Gathering {
 
     public boolean isHost(User user){
         return host.equals(user);
+    }
+
+    public void createMessage(ChatMessage chatMessage) {
+        chatMessageList.add(chatMessage);
     }
 }

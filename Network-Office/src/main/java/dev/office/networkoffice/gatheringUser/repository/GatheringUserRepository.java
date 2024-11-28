@@ -29,4 +29,6 @@ public interface GatheringUserRepository extends JpaRepository<GatheringUser, Lo
             FROM GatheringUser m
             WHERE m.id = :gatheringUserId AND m.gathering.host.id = :userId""")
     Optional<GatheringUser> findGatheringUserByHost(Long gatheringUserId, Long userId);
+
+    List<GatheringUser> findByUser(User user);
 }
