@@ -116,16 +116,16 @@ class CommentTest {
         }
 
         @Test
-        @DisplayName("null 작성자 검사 시 false를 반환한다")
+        @DisplayName("null 작성자 검사 시 예외가 발생한다")
         void shouldReturnFalse_WhenCheckedWithNullAuthor() {
             // given
             Comment comment = Comment.writeNewComment(testFeed, testUser, validText);
 
-            // when
-            boolean isCreatedByUser = comment.isCreatedBy(null);
-
-            // then
-            assertThat(isCreatedByUser).isFalse();
+            // when & then
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> comment.isCreatedBy(null)
+            );
         }
     }
 

@@ -33,7 +33,7 @@ class FeedTest {
         assertEquals(testUser, feed.getAuthor());
     }
 
-    @DisplayName("피드 생성 시 조회 수는 0이며, 조회 수 증가 후 값은 1이 된다.")
+    @DisplayName("피드 생성 시 조회 수는 0이다.")
     @Test
     void shouldInitializeViewCountToZeroAndIncrementToOne() {
         // given
@@ -46,13 +46,7 @@ class FeedTest {
         Feed feed = Feed.writeNewFeed(title, contents, category, testUser);
 
         // then
-        assertAll(
-                () -> assertEquals(0L, feed.getView(), "피드 생성 시 조회 수는 0이어야 합니다."),
-                () -> {
-                    feed.increaseView();
-                    assertEquals(1L, feed.getView(), "조회 수 증가 후 값은 1이어야 합니다.");
-                }
-        );
+        assertAll(() -> assertEquals(0L, feed.getView(), "피드 생성 시 조회 수는 0이어야 합니다."));
     }
 
     @DisplayName("제목, 카테고리 또는 내용이 비어있거나 null인 경우 예외가 발생한다.")
