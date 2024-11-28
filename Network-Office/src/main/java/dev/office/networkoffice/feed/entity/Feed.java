@@ -61,8 +61,4 @@ public class Feed extends BaseTimeEntity {
         Assert.hasText(category, "피드의 카테고리는 필수입니다.");
         Assert.notNull(author, "피드의 작성자는 필수입니다.");
     }
-
-    public void increaseView() {
-        view++;
-    }
 }
