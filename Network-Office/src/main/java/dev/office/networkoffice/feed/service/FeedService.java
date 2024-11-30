@@ -42,11 +42,15 @@ public class FeedService {
 
     @Transactional
     public FeedDetails getFeed(Long userId, Long feedId) {
+        addViewCount(feedId);
         Feed feed = findFeedById(feedId);
-        feed.increaseView();
         List<CommentDetails> comments = getCommentDetails(feedId);
         boolean isLiked = getLiked(userId, feedId);
         return mapToFeedDetails(feed, comments, isLiked);
+    }
+
+    private void addViewCount(Long feedId) {
+        feedRepository.incrementViewCount(feedId);
     }
 
     private User findUserById(Long userId) {

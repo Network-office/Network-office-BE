@@ -34,7 +34,7 @@ public class FeedController implements FeedApiDocs {
     }
 
     @GetMapping
-    public Slice<FeedInfo> viewFeeds(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC)
+    public Slice<FeedInfo> viewFeeds(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
                                      Pageable pageable) {
         return feedService.getFeeds(pageable);
     }
