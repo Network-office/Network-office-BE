@@ -7,11 +7,10 @@ import dev.office.networkoffice.gathering.controller.dto.response.GatheringClose
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import java.security.Principal;
 
 @Tag(name = "모임", description = "모임 관련 API")
 public interface GatheringApiDocs {
@@ -27,7 +26,10 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringListResponseDto findGatheringList(Principal principal, String si, String dong, String gu);
+    GatheringListResponseDto findGatheringList(@Parameter(hidden = true) Long userId,
+                                               String si,
+                                               String dong,
+                                               String gu);
 
     @Operation(summary = "모임 생성")
     @ApiResponses(value = {
@@ -40,7 +42,7 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringResponseDto createGathering(Principal principal, GatheringDto gatheringDto);
+    GatheringResponseDto createGathering(@Parameter(hidden = true) Long userId, GatheringDto gatheringDto);
 
     @Operation(summary = "모임 수정")
     @ApiResponses(value = {
@@ -53,7 +55,7 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringResponseDto modifyGatheringByHost(Principal principal,
+    GatheringResponseDto modifyGatheringByHost(@Parameter(hidden = true) Long userId,
                                                Long gatheringId,
                                                GatheringDto gatheringDto);
 
@@ -68,7 +70,7 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringClosedResponse cancelGatheringByHost(Principal principal,
+    GatheringClosedResponse cancelGatheringByHost(@Parameter(hidden = true) Long userId,
                                                   Long gatheringId,
                                                   GatheringCancelDto cancelDto);
 
@@ -83,7 +85,7 @@ public interface GatheringApiDocs {
                     description = "유효하지 않은 코드가 전달되었을 때"
             )
     })
-    GatheringClosedResponse successGatheringByHost(Principal principal,
+    GatheringClosedResponse successGatheringByHost(@Parameter(hidden = true) Long userId,
                                                    Long gatheringId,
                                                    GatheringSuccessDto successDto);
 }

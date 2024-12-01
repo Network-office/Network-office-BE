@@ -6,7 +6,7 @@ import dev.office.networkoffice.feed.dto.response.FeedInfo;
 import dev.office.networkoffice.feed.dto.request.FeedWrite;
 import dev.office.networkoffice.feed.service.FeedService;
 import dev.office.networkoffice.feed.service.LikesService;
-import java.security.Principal;
+import dev.office.networkoffice.global.annotation.CurrentUserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,8 +28,7 @@ public class FeedController implements FeedApiDocs {
     private final LikesService likesService;
 
     @PostMapping
-    public void writeFeed(Principal principal, @RequestBody FeedWrite request) {
-        Long userId = Long.parseLong(principal.getName());
+    public void writeFeed(@CurrentUserId Long userId, @RequestBody FeedWrite request) {
         feedService.writeFeed(userId, request);
     }
 
@@ -40,20 +39,17 @@ public class FeedController implements FeedApiDocs {
     }
 
     @GetMapping("{feedId}")
-    public FeedDetails viewFeedDetail(Principal principal, @PathVariable Long feedId) {
-        Long userId = Long.parseLong(principal.getName());
+    public FeedDetails viewFeedDetail(@CurrentUserId Long userId, @PathVariable Long feedId) {
         return feedService.getFeed(userId, feedId);
     }
 
     @PostMapping("{feedId}/likes")
-    public void feedLikes(Principal principal, @PathVariable Long feedId) {
-        Long userId = Long.parseLong(principal.getName());
+    public void feedLikes(@CurrentUserId Long userId, @PathVariable Long feedId) {
         likesService.likeFeed(userId, feedId);
     }
 
     @PostMapping("{feedId}/unlikes")
-    public void feedUnlikes(Principal principal, @PathVariable Long feedId) {
-        Long userId = Long.parseLong(principal.getName());
+    public void feedUnlikes(@CurrentUserId Long userId, @PathVariable Long feedId) {
         likesService.unlikeFeed(userId, feedId);
     }
 }

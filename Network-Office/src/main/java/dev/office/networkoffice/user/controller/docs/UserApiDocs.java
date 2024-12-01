@@ -5,11 +5,10 @@ import dev.office.networkoffice.user.dto.UpdateDisplayName;
 import dev.office.networkoffice.user.dto.UpdateProfileImage;
 import dev.office.networkoffice.user.dto.UserInfo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import java.security.Principal;
 
 @Tag(name = "사용자", description = "사용자 관련 API")
 public interface UserApiDocs {
@@ -25,7 +24,7 @@ public interface UserApiDocs {
                     description = "인증되지 않은 사용자가 요청했을 때"
             )
     })
-    UserInfo profile(Principal principal);
+    UserInfo profile(@Parameter(hidden = true) Long userId);
 
     @Operation(summary = "내 닉네임 변경")
     @ApiResponses(value = {
@@ -42,7 +41,7 @@ public interface UserApiDocs {
                     description = "인증되지 않은 사용자가 요청했을 때"
             )
     })
-    void updateDisplayName(Principal principal, UpdateDisplayName request);
+    void updateDisplayName(@Parameter(hidden = true) Long userId, UpdateDisplayName request);
 
     @Operation(summary = "내 프로필 이미지 변경")
     @ApiResponses(value = {
@@ -59,7 +58,7 @@ public interface UserApiDocs {
                     description = "인증되지 않은 사용자가 요청했을 때"
             )
     })
-    void updateProfileImage(Principal principal, UpdateProfileImage request);
+    void updateProfileImage(@Parameter(hidden = true) Long userId, UpdateProfileImage request);
 
     @Operation(summary = "내 상태 메시지 변경")
     @ApiResponses(value = {
@@ -76,5 +75,5 @@ public interface UserApiDocs {
                     description = "인증되지 않은 사용자가 요청했을 때"
             )
     })
-    void updateDescription(Principal principal, UpdateDescription request);
+    void updateDescription(@Parameter(hidden = true) Long userId, UpdateDescription request);
 }

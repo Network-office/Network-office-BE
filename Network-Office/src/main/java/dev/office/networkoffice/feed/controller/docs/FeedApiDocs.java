@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.security.Principal;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -22,7 +21,7 @@ public interface FeedApiDocs {
                     description = "요청이 정상적으로 처리되었을 때"
             )
     })
-    void writeFeed(Principal principal, FeedWrite feedWrite);
+    void writeFeed(@Parameter(hidden = true) Long userId, FeedWrite feedWrite);
 
     @Operation(summary = "피드 목록 조회")
     @ApiResponses(value = {
@@ -43,7 +42,7 @@ public interface FeedApiDocs {
                     description = "요청이 정상적으로 처리되었을 때"
             )
     })
-    FeedDetails viewFeedDetail(Principal principal, Long feedId);
+    FeedDetails viewFeedDetail(@Parameter(hidden = true) Long userId, Long feedId);
 
     @Operation(summary = "특정 피드 좋아요 누르기")
     @ApiResponses(value = {
@@ -52,7 +51,7 @@ public interface FeedApiDocs {
                     description = "요청이 정상적으로 처리되었을 때"
             )
     })
-    void feedLikes(Principal principal, Long feedId);
+    void feedLikes(@Parameter(hidden = true) Long userId, Long feedId);
 
     @Operation(summary = "특정 피드 좋아요 취소하기")
     @ApiResponses(value = {
@@ -61,5 +60,5 @@ public interface FeedApiDocs {
                     description = "요청이 정상적으로 처리되었을 때"
             )
     })
-    void feedUnlikes(Principal principal, Long feedId);
+    void feedUnlikes(@Parameter(hidden = true) Long userId, Long feedId);
 }
