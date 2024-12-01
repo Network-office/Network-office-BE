@@ -8,10 +8,9 @@ import dev.office.networkoffice.gathering.controller.dto.response.GatheringClose
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringListResponseDto;
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringResponseDto;
 import dev.office.networkoffice.gathering.service.GatheringService;
+import dev.office.networkoffice.global.annotation.CurrentUserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RestController
 @RequestMapping("api/v1/gathering")
@@ -21,7 +20,7 @@ public class GatheringController implements GatheringApiDocs {
     private final GatheringService gatheringService;
 
     @GetMapping
-    public GatheringListResponseDto findGatheringList(Principal principal,
+    public GatheringListResponseDto findGatheringList(@CurrentUserId Long userId,
                                                       @RequestParam("si") String si,
                                                       @RequestParam("dong") String dong,
                                                       @RequestParam("gu") String gu) {
@@ -29,37 +28,29 @@ public class GatheringController implements GatheringApiDocs {
     }
 
     @PostMapping
-    public GatheringResponseDto createGathering(Principal principal,
+    public GatheringResponseDto createGathering(@CurrentUserId Long userId,
                                                 @RequestBody GatheringDto gatheringDto) {
-        Long userId = getUserId(principal);
         return gatheringService.createGathering(userId, gatheringDto);
     }
 
     @PutMapping("{gatheringId}")
-    public GatheringResponseDto modifyGatheringByHost(Principal principal,
+    public GatheringResponseDto modifyGatheringByHost(@CurrentUserId Long userId,
                                                       @PathVariable("gatheringId") Long gatheringId,
                                                       @RequestBody GatheringDto gatheringDto) {
-        Long userId = getUserId(principal);
         return gatheringService.modifyGatheringInfoByHost(userId, gatheringId, gatheringDto);
     }
 
     @PostMapping("{gatheringId}/success")
-    public GatheringClosedResponse successGatheringByHost(Principal principal,
+    public GatheringClosedResponse successGatheringByHost(@CurrentUserId Long userId,
                                                           @PathVariable("gatheringId") Long gatheringId,
                                                           GatheringSuccessDto successDto) {
-        Long userId = getUserId(principal);
         return gatheringService.successGatheringByHost(userId, gatheringId, successDto);
     }
 
     @PostMapping("{gatheringId}/cancel")
-    public GatheringClosedResponse cancelGatheringByHost(Principal principal,
+    public GatheringClosedResponse cancelGatheringByHost(@CurrentUserId Long userId,
                                                          @PathVariable("gatheringId") Long gatheringId,
                                                          GatheringCancelDto cancelDto) {
-        Long userId = getUserId(principal);
         return gatheringService.cancelGatheringByHost(userId, gatheringId, cancelDto);
-    }
-
-    private Long getUserId(Principal principal) {
-        return Long.parseLong(principal.getName());
     }
 }

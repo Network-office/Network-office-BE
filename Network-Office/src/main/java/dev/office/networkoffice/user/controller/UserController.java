@@ -1,5 +1,6 @@
 package dev.office.networkoffice.user.controller;
 
+import dev.office.networkoffice.global.annotation.CurrentUserId;
 import dev.office.networkoffice.user.controller.docs.UserApiDocs;
 import dev.office.networkoffice.user.dto.UpdateDescription;
 import dev.office.networkoffice.user.dto.UpdateDisplayName;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/users")
@@ -23,28 +22,22 @@ public class UserController implements UserApiDocs {
     private final UserService userService;
 
     @GetMapping("profile")
-    public UserInfo profile(Principal principal) {
-        Long userId = Long.parseLong(principal.getName());
+    public UserInfo profile(@CurrentUserId Long userId) {
         return userService.profile(userId);
     }
 
     @PatchMapping("profile/display-name")
-    public void updateDisplayName(Principal principal,
-                                  @RequestBody UpdateDisplayName request) {
-        Long userId = Long.parseLong(principal.getName());
+    public void updateDisplayName(@CurrentUserId Long userId, @RequestBody UpdateDisplayName request) {
         userService.updateDisplayName(userId, request);
     }
 
     @PatchMapping("profile/image")
-    public void updateProfileImage(Principal principal,
-                                   @RequestBody UpdateProfileImage request) {
-        Long userId = Long.parseLong(principal.getName());
+    public void updateProfileImage(@CurrentUserId Long userId, @RequestBody UpdateProfileImage request) {
         userService.updateProfileImage(userId, request);
     }
 
     @PatchMapping("profile/description")
-    public void updateDescription(Principal principal, UpdateDescription request) {
-        Long userId = Long.parseLong(principal.getName());
+    public void updateDescription(@CurrentUserId Long userId, UpdateDescription request) {
         userService.updateDescription(userId, request);
     }
 }

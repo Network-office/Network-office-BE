@@ -3,7 +3,7 @@ package dev.office.networkoffice.feed.controller;
 import dev.office.networkoffice.feed.controller.docs.CommentApiDocs;
 import dev.office.networkoffice.feed.dto.request.CommentWrite;
 import dev.office.networkoffice.feed.service.CommentService;
-import java.security.Principal;
+import dev.office.networkoffice.global.annotation.CurrentUserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,14 +20,12 @@ public class CommentController implements CommentApiDocs {
     private final CommentService commentService;
 
     @PostMapping
-    public void writeComment(Principal principal, @RequestBody CommentWrite commentWrite) {
-        Long userId = Long.parseLong(principal.getName());
+    public void writeComment(@CurrentUserId Long userId, @RequestBody CommentWrite commentWrite) {
         commentService.writeComment(userId, commentWrite);
     }
 
     @DeleteMapping("{commentId}")
-    public void removeComment(Principal principal, @PathVariable Long commentId) {
-        Long userId = Long.parseLong(principal.getName());
+    public void removeComment(@CurrentUserId Long userId, @PathVariable Long commentId) {
         commentService.removeComment(userId, commentId);
     }
 }

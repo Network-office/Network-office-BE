@@ -4,10 +4,9 @@ import dev.office.networkoffice.gatheringUser.controller.docs.GatheringUserApiDo
 import dev.office.networkoffice.gatheringUser.controller.dto.request.ChangeStatusDto;
 import dev.office.networkoffice.gatheringUser.controller.dto.response.ApplicantUserDto;
 import dev.office.networkoffice.gatheringUser.service.GatheringUserService;
+import dev.office.networkoffice.global.annotation.CurrentUserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,28 +16,21 @@ public class GatheringUserController implements GatheringUserApiDocs {
     private final GatheringUserService gatheringUserService;
 
     @PostMapping("{gatheringId}")
-    public void applyGathering(Principal principal,
+    public void applyGathering(@CurrentUserId Long userId,
                                @PathVariable(name = "gatheringId") Long gatheringId) {
-        Long userId = getUserId(principal);
         gatheringUserService.applyGathering(userId, gatheringId);
     }
 
     @GetMapping("{gatheringId}")
-    public ApplicantUserDto getApplicantsInGatheringByHost(Principal principal,
+    public ApplicantUserDto getApplicantsInGatheringByHost(@CurrentUserId Long userId,
                                                            @PathVariable(name = "gatheringId") Long gatheringId) {
-        Long userId = getUserId(principal);
         return gatheringUserService.getApplicantsByHost(userId, gatheringId);
     }
 
     @PatchMapping("{applicantId}/status")
-    public void patchApplicantStatusByHost(Principal principal,
+    public void patchApplicantStatusByHost(@CurrentUserId Long userId,
                                            @PathVariable(name = "applicantId") Long applicantId,
                                            @RequestBody ChangeStatusDto changeStatusDto) {
-        Long userId = getUserId(principal);
         gatheringUserService.patchApplicantStatus(userId, applicantId, changeStatusDto);
-    }
-
-    private Long getUserId(Principal principal) {
-        return Long.parseLong(principal.getName());
     }
 }
