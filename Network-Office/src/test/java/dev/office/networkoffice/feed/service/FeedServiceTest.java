@@ -2,9 +2,14 @@ package dev.office.networkoffice.feed.service;
 
 import dev.office.networkoffice.feed.dto.request.FeedWrite;
 import dev.office.networkoffice.feed.entity.Feed;
+import dev.office.networkoffice.feed.repository.CommentRepository;
 import dev.office.networkoffice.feed.repository.FeedRepository;
+import dev.office.networkoffice.feed.repository.LikesRepository;
+import dev.office.networkoffice.feed.repository.VisitedRepository;
+import dev.office.networkoffice.user.entity.OAuthInfo;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +35,12 @@ class FeedServiceTest {
     private FeedRepository feedRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private VisitedRepository visitedRepository;
+    @Mock
+    private CommentRepository commentRepository;
+    @Mock
+    private LikesRepository likesRepository;
 
     @InjectMocks
     private FeedService feedService;
@@ -39,8 +50,9 @@ class FeedServiceTest {
 
     @BeforeEach
     void setUp() {
-        mockUser = mock(User.class);
-        mockFeed = mock(Feed.class);
+        OAuthInfo oAuthInfo = OAuthInfo.createForKakao("1", "test");
+        mockUser = User.createNewUserWithOAuth(oAuthInfo, "http://test.com");
+        mockFeed = Feed.writeNewFeed("Test Title", "Test Contents", "Test Category", mockUser);
     }
 
     @DisplayName("동시에 여러 사용자가 피드를 조회해도 조회수가 정상적으로 증가한다. (동시성 테스트)")
@@ -72,6 +84,29 @@ class FeedServiceTest {
 
         // 조회수 증가 메서드가 정확히 10번 호출되었는지 검증
         verify(feedRepository, times(threadCount)).incrementViewCount(feedId);
+    }
+
+    @DisplayName("동일한 사용자가 동일한 피드를 여러 번 조회해도 조회수는 한 번만 증가한다. (24시간 동안)")
+    @Test
+    void shouldIncrementViewCountOnce_WhenUserViewFeedMultipleTimes() {
+        // given
+        Long userId = 1L;
+        Long feedId = 1L;
+
+        when(visitedRepository.isFeedVisited(userId, feedId)).thenReturn(false);
+        when(feedRepository.findById(feedId)).thenReturn(Optional.of(mockFeed));
+        when(commentRepository.findByFeedId(feedId)).thenReturn(new ArrayList<>());
+        when(likesRepository.existsByUserIdAndFeedId(userId, feedId)).thenReturn(false);
+
+        // when
+        feedService.getFeed(userId, feedId);
+        when(visitedRepository.isFeedVisited(userId, feedId)).thenReturn(true); // 캐시에 저장된 방문 여부를 true로 설정
+        feedService.getFeed(userId, feedId);
+
+        // then
+        verify(feedRepository, times(1)).incrementViewCount(feedId); // 조회수 증가 메서드가 한 번만 호출되었는지 검증
+        verify(visitedRepository, times(2)).isFeedVisited(userId, feedId);
+        verify(visitedRepository, times(1)).save(userId, feedId);
     }
 
     @DisplayName("유효한 사용자와 요청이 제공된 경우 피드를 작성된다.")

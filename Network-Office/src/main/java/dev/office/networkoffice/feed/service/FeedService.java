@@ -9,6 +9,7 @@ import dev.office.networkoffice.feed.entity.Feed;
 import dev.office.networkoffice.feed.repository.CommentRepository;
 import dev.office.networkoffice.feed.repository.FeedRepository;
 import dev.office.networkoffice.feed.repository.LikesRepository;
+import dev.office.networkoffice.feed.repository.VisitedRepository;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;
 import java.util.List;
@@ -26,6 +27,7 @@ public class FeedService {
     private final LikesRepository likesRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final VisitedRepository visitedRepository;
 
     @Transactional
     public void writeFeed(Long userId, FeedWrite request) {
@@ -42,15 +44,18 @@ public class FeedService {
 
     @Transactional
     public FeedDetails getFeed(Long userId, Long feedId) {
-        addViewCount(feedId);
+        incrementViewCountIfFirstVisit(userId, feedId);
         Feed feed = findFeedById(feedId);
         List<CommentDetails> comments = getCommentDetails(feedId);
         boolean isLiked = getLiked(userId, feedId);
         return mapToFeedDetails(feed, comments, isLiked);
     }
 
-    private void addViewCount(Long feedId) {
-        feedRepository.incrementViewCount(feedId);
+    private void incrementViewCountIfFirstVisit(Long userId, Long feedId) {
+        if (!visitedRepository.isFeedVisited(userId, feedId)) {
+            feedRepository.incrementViewCount(feedId);
+            visitedRepository.save(userId, feedId);
+        }
     }
 
     private User findUserById(Long userId) {
@@ -73,7 +78,7 @@ public class FeedService {
     }
 
     private Feed findFeedById(Long feedId) {
-        return feedRepository.findById(feedId)
+        return feedRepository.findFeedByIdWithAuthor(feedId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 피드입니다."));
     }
 
