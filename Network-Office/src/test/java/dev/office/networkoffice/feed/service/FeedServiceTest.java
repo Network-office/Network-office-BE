@@ -65,7 +65,7 @@ class FeedServiceTest {
         CountDownLatch latch = new CountDownLatch(threadCount);
 
         // 가짜 Feed 객체 설정
-        when(feedRepository.findById(feedId)).thenReturn(Optional.of(mock()));
+        when(feedRepository.findFeedByIdWithAuthor(feedId)).thenReturn(Optional.of(mock()));
 
         // when
         for (int i = 0; i < threadCount; i++) {
@@ -94,7 +94,7 @@ class FeedServiceTest {
         Long feedId = 1L;
 
         when(visitedRepository.isFeedVisited(userId, feedId)).thenReturn(false);
-        when(feedRepository.findById(feedId)).thenReturn(Optional.of(mockFeed));
+        when(feedRepository.findFeedByIdWithAuthor(feedId)).thenReturn(Optional.of(mockFeed));
         when(commentRepository.findByFeedId(feedId)).thenReturn(new ArrayList<>());
         when(likesRepository.existsByUserIdAndFeedId(userId, feedId)).thenReturn(false);
 
@@ -148,7 +148,7 @@ class FeedServiceTest {
         Long userId = 1L;
         Long feedId = 2L;
 
-        when(feedRepository.findById(feedId)).thenReturn(Optional.empty());
+        when(feedRepository.findFeedByIdWithAuthor(feedId)).thenReturn(Optional.empty());
 
         // when & then
         assertThrows(IllegalArgumentException.class,

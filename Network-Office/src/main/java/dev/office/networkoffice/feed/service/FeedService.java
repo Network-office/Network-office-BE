@@ -10,6 +10,7 @@ import dev.office.networkoffice.feed.repository.CommentRepository;
 import dev.office.networkoffice.feed.repository.FeedRepository;
 import dev.office.networkoffice.feed.repository.LikesRepository;
 import dev.office.networkoffice.feed.repository.VisitedRepository;
+import dev.office.networkoffice.feed.repository.dto.FeedWithLikeCount;
 import dev.office.networkoffice.user.entity.User;
 import dev.office.networkoffice.user.repository.UserRepository;
 import java.util.List;
@@ -38,7 +39,7 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public Slice<FeedInfo> getFeeds(Pageable pageable) {
-        return feedRepository.findAllByOrderByCreatedTimeDesc(pageable)
+        return feedRepository.findAllFeedsWithLikeCount(pageable)
                 .map(this::mapToFeedInfo);
     }
 
@@ -63,17 +64,17 @@ public class FeedService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 
-    private FeedInfo mapToFeedInfo(Feed feed) {
+    private FeedInfo mapToFeedInfo(FeedWithLikeCount feedWithLikeCount) {
         return new FeedInfo(
-                feed.getId(),
-                feed.getTitle(),
-                feed.getContents(),
-                feed.getCategory(),
-                feed.getAuthor().getId(),
-                feed.getAuthor().getProfile().getDisplayName(),
-                feed.getView(),
-                getLikes(feed.getId()),
-                feed.getCreatedTime()
+                feedWithLikeCount.feed().getId(),
+                feedWithLikeCount.feed().getTitle(),
+                feedWithLikeCount.feed().getContents(),
+                feedWithLikeCount.feed().getCategory(),
+                feedWithLikeCount.feed().getAuthor().getId(),
+                feedWithLikeCount.feed().getAuthor().getProfile().getDisplayName(),
+                feedWithLikeCount.feed().getView(),
+                feedWithLikeCount.likeCount(),
+                feedWithLikeCount.feed().getCreatedTime()
         );
     }
 
