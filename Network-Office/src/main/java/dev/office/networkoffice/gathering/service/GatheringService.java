@@ -10,7 +10,6 @@ import dev.office.networkoffice.gathering.domain.GatheringStatus;
 import dev.office.networkoffice.gatheringUser.domain.GatheringUser;
 import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
 import dev.office.networkoffice.gatheringUser.repository.GatheringUserRepository;
-import dev.office.networkoffice.gatheringUser.service.GatheringUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +37,7 @@ public class GatheringService {
         User host = findUserById(userId);
         Gathering gathering = createGatheringByRequest(dto, host);
         Gathering savedGathering = gatheringRepository.save(gathering);
-        GatheringUser gatheringUser= gatheringUserRepository.save(
+        GatheringUser gatheringUser = gatheringUserRepository.save(
                 savedGathering.createGatheringUserByHost()
         );
         gatheringUser.updateApplicantStatus(GatheringUserStatus.CONFIRMED_USER, "호스트입니다.");

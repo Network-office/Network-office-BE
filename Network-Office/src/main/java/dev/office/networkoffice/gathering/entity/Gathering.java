@@ -105,6 +105,10 @@ public class Gathering {
                 .toList();
     }
 
+    public int getPresentGatheringMemberCount(){
+        return getConfiremedUserList().size();
+    }
+
     private boolean isConfirmedUser(GatheringUser gatheringUser) {
         return gatheringUser.getGatheringUserStatus()
                 .equals(GatheringUserStatus.CONFIRMED_USER);

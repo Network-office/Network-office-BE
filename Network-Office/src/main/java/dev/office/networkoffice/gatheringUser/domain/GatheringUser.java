@@ -78,6 +78,7 @@ public class GatheringUser {
     }
 
     private void confirmApplicants() {
+        checkMaxMembers();
         this.gatheringUserStatus = GatheringUserStatus.CONFIRMED_USER;
     }
 
@@ -89,5 +90,9 @@ public class GatheringUser {
     public boolean isEligibleForReapplication() {
         GatheringUserStatus status = gatheringUserStatus;
         return !(status == GatheringUserStatus.DEPORTATION_USER || status == GatheringUserStatus.BLOCKED_USER);
+    }
+
+    private void checkMaxMembers() {
+        Assert.isTrue(gathering.getPresentGatheringMemberCount() + 1 <= gathering.getMaxMembers(), "모임 최대 인원을 초과했습니다.");
     }
 }
