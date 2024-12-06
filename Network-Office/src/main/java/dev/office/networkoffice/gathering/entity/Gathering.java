@@ -10,6 +10,8 @@ import dev.office.networkoffice.gatheringUser.domain.GatheringUser;
 import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
 import dev.office.networkoffice.user.entity.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,9 +45,13 @@ public class Gathering {
     @Embedded
     private TimeInfo timeInfo;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User host;
+
+    @Max(100)
+    @Min(1)
+    private int maxMembers;
 
     @Enumerated(EnumType.STRING)
     private GatheringStatus gatheringStatus;
@@ -67,6 +73,7 @@ public class Gathering {
                       Category category,
                       PlaceInfo placeInfo,
                       TimeInfo timeInfo,
+                      int maxMembers,
                       List<GatheringUser> gatheringUsers) {
         this.host = host;
         this.title = title;
@@ -75,6 +82,7 @@ public class Gathering {
         this.placeInfo = placeInfo;
         this.timeInfo = timeInfo;
         this.gatheringStatus = GatheringStatus.IN_PROGRESS;
+        this.maxMembers = maxMembers;
         this.gatheringUserList = gatheringUsers;
     }
 
@@ -133,5 +141,12 @@ public class Gathering {
 
     public boolean isHost(User user){
         return host.equals(user);
+    }
+
+    public GatheringUser createGatheringUserByHost(){
+        return GatheringUser.builder()
+                .user(host)
+                .gathering(this)
+                .build();
     }
 }

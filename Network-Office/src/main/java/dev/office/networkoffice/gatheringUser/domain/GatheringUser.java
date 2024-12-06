@@ -2,6 +2,7 @@ package dev.office.networkoffice.gatheringUser.domain;
 
 import dev.office.networkoffice.gathering.domain.ReasonForDeportation;
 import dev.office.networkoffice.gathering.entity.Gathering;
+import dev.office.networkoffice.user.entity.Profile;
 import dev.office.networkoffice.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,6 +36,9 @@ public class GatheringUser {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Embedded
+    private Profile profile;
+
     @Enumerated(EnumType.STRING)
     private GatheringUserStatus gatheringUserStatus;
 
@@ -48,6 +52,7 @@ public class GatheringUser {
         this.gathering = gathering;
         this.user = user;
         this.gatheringUserStatus = GatheringUserStatus.APPLY_USER;
+        this.profile = user.getProfile();
     }
 
     public void updateApplicantStatus(GatheringUserStatus status, String reason) {

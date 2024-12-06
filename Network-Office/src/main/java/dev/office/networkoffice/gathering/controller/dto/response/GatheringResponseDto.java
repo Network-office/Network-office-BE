@@ -1,7 +1,9 @@
 package dev.office.networkoffice.gathering.controller.dto.response;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.office.networkoffice.gathering.entity.Gathering;
 import lombok.Builder;
 
@@ -19,8 +21,10 @@ public record GatheringResponseDto(
         Double y,
 
         String date,
-        LocalDateTime startTime,
-        LocalDateTime endTime
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+        String startTime,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+        String endTime
 ) {
     public static GatheringResponseDto from(Gathering gathering) {
         return GatheringResponseDto.builder()
@@ -33,8 +37,8 @@ public record GatheringResponseDto(
                 .x(gathering.getPlaceInfo().getX())
                 .y(gathering.getPlaceInfo().getY())
                 .date(gathering.getTimeInfo().getDate())
-                .startTime(gathering.getTimeInfo().getStartTime())
-                .endTime(gathering.getTimeInfo().getEndTime())
+                .startTime(String.valueOf(gathering.getTimeInfo().getStartTime()))
+                .endTime(String.valueOf(gathering.getTimeInfo().getEndTime()))
                 .build();
     }
 }
