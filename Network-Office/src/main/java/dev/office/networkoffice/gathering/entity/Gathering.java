@@ -73,8 +73,7 @@ public class Gathering {
                       Category category,
                       PlaceInfo placeInfo,
                       TimeInfo timeInfo,
-                      int maxMembers,
-                      List<GatheringUser> gatheringUsers) {
+                      int maxMembers) {
         this.host = host;
         this.title = title;
         this.description = description;
@@ -83,7 +82,7 @@ public class Gathering {
         this.timeInfo = timeInfo;
         this.gatheringStatus = GatheringStatus.IN_PROGRESS;
         this.maxMembers = maxMembers;
-        this.gatheringUserList = gatheringUsers;
+        this.gatheringUserList = new ArrayList<>();
     }
 
     public void modifyGatheringInfo(String title,
@@ -98,10 +97,9 @@ public class Gathering {
         this.timeInfo = timeInfo;
     }
 
-    public List<User> getConfiremedUserList() {
+    public List<GatheringUser> getConfiremedUserList() {
         return gatheringUserList.stream()
                 .filter(this::isConfirmedUser)
-                .map(GatheringUser::getUser)
                 .toList();
     }
 
