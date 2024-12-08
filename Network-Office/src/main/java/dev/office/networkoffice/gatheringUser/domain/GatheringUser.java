@@ -2,6 +2,7 @@ package dev.office.networkoffice.gatheringUser.domain;
 
 import dev.office.networkoffice.gathering.domain.ReasonForDeportation;
 import dev.office.networkoffice.gathering.entity.Gathering;
+import dev.office.networkoffice.user.entity.Profile;
 import dev.office.networkoffice.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,6 +36,9 @@ public class GatheringUser {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Embedded
+    private Profile profile;
+
     @Enumerated(EnumType.STRING)
     private GatheringUserStatus gatheringUserStatus;
 
@@ -48,6 +52,7 @@ public class GatheringUser {
         this.gathering = gathering;
         this.user = user;
         this.gatheringUserStatus = GatheringUserStatus.APPLY_USER;
+        this.profile = user.getProfile();
     }
 
     public void updateApplicantStatus(GatheringUserStatus status, String reason) {
@@ -73,6 +78,7 @@ public class GatheringUser {
     }
 
     private void confirmApplicants() {
+        checkMaxMembers();
         this.gatheringUserStatus = GatheringUserStatus.CONFIRMED_USER;
     }
 
@@ -84,5 +90,9 @@ public class GatheringUser {
     public boolean isEligibleForReapplication() {
         GatheringUserStatus status = gatheringUserStatus;
         return !(status == GatheringUserStatus.DEPORTATION_USER || status == GatheringUserStatus.BLOCKED_USER);
+    }
+
+    private void checkMaxMembers() {
+        Assert.isTrue(gathering.getPresentGatheringMemberCount() + 1 <= gathering.getMaxMembers(), "모임 최대 인원을 초과했습니다.");
     }
 }

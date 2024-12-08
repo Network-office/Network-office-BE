@@ -7,6 +7,9 @@ import dev.office.networkoffice.gathering.controller.dto.request.GatheringSucces
 import dev.office.networkoffice.gathering.controller.dto.response.GatheringClosedResponse;
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
 
+import dev.office.networkoffice.gatheringUser.domain.GatheringUser;
+import dev.office.networkoffice.gatheringUser.domain.GatheringUserStatus;
+import dev.office.networkoffice.gatheringUser.repository.GatheringUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,7 @@ public class GatheringService {
 
     private final GatheringRepository gatheringRepository;
     private final UserRepository userRepository;
+    private final GatheringUserRepository gatheringUserRepository;
 
     // 모임 생성
     @Transactional
@@ -33,6 +37,11 @@ public class GatheringService {
         User host = findUserById(userId);
         Gathering gathering = createGatheringByRequest(dto, host);
         Gathering savedGathering = gatheringRepository.save(gathering);
+        GatheringUser gatheringUser = gatheringUserRepository.save(
+                savedGathering.createGatheringUserByHost()
+        );
+        gatheringUser.updateApplicantStatus(GatheringUserStatus.CONFIRMED_USER, "호스트입니다.");
+
         return GatheringResponseDto.from(savedGathering);
     }
 
@@ -40,6 +49,7 @@ public class GatheringService {
         return Gathering.builder()
                 .category(Category.valueOf(dto.category()))
                 .title(dto.title())
+                .maxMembers(dto.maxMembers())
                 .description(dto.description())
                 .placeInfo(dto.placeInfoConstructor())
                 .timeInfo(dto.timeInfoConstructor())
