@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.office.networkoffice.gathering.domain.GatheringStatus;
+import dev.office.networkoffice.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,4 +19,12 @@ public interface GatheringRepository extends JpaRepository<Gathering, Long> {
     List<Gathering> findGatheringsByPlaceInfoAndStatus(String si, String dong, String gu, GatheringStatus gatheringStatus);
 
     Optional<Gathering> findByHostIdAndId(Long hostId, Long gatheringId);
+
+    List<Gathering> findByHost(User user);
+
+    @Query("""
+            SELECT room
+            FROM Gathering room LEFT JOIN FETCH room.chatMessageList
+            WHERE room.id = :id""")
+    Optional<Gathering> findWithMessagesById(Long id);
 }
