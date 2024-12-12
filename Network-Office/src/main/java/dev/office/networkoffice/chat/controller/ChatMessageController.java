@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/chat-rooms")
+@RequestMapping("api/v1/chat-rooms")
 @RequiredArgsConstructor
 public class ChatMessageController implements ChatMessageApiDocs {
 
     private final ChatMessageService chatMessageService;
 
-    @GetMapping("/{roomId}/messages")
+    @GetMapping("{roomId}/messages")
     public List<ChatMessageResponse> getMessageList(@PathVariable Long roomId) {
         return chatMessageService.loadChatMessageList(roomId);
     }

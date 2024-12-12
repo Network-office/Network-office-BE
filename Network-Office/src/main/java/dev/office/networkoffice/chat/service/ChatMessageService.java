@@ -24,7 +24,10 @@ public class ChatMessageService {
     public List<ChatMessageResponse> loadChatMessageList(Long roomId) {
         Gathering gathering = findChatRoomWithMessagesById(roomId);
 //        return gathering.getChatMessageList().stream().map(ChatMessageResponse::from).toList();
-        return gathering.getChatMessageList().stream().map(ChatMessageResponse::anonymousFrom).toList();
+        return gathering.getChatMessageList()
+                .stream()
+                .map(ChatMessageResponse::anonymousFrom)
+                .toList();
     }
 
     @Transactional
